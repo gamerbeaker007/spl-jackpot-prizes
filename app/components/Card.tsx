@@ -47,7 +47,7 @@ export default function Card({ jackpot, card }: Props) {
   const imageUrl = `https://d36mxiodymuqjm.cloudfront.net/cards_v2.2/${encodeURIComponent(card.name)}.jpg`
 
   const foilLabel = (foil: number) =>
-    foil === 2 ? 'Gold Arcane' : foil === 3 ? 'Back' : foil === 4 ? 'Black Arcane' : `Foil ${foil}`
+    foil === 2 ? 'Gold Foil Arcane' : foil === 3 ? 'Back Foil' : foil === 4 ? 'Black Foil Arcane' : `Foil ${foil}`
 
   return (
     <>
@@ -59,9 +59,6 @@ export default function Card({ jackpot, card }: Props) {
         />
         <div className="flex-1 space-y-1">
           <h2 className="text-base font-bold">{card.name}</h2>
-          <p>Total Minted: {jackpot.total_minted}</p>
-          <p>Total: {jackpot.total}</p>
-
           <div className="mt-2 space-y-1">
             {FOIL_TYPES.map((foil) => {
               const data = mintData[foil]
@@ -84,6 +81,8 @@ export default function Card({ jackpot, card }: Props) {
               )
             })}
           </div>
+          <p>Total (GFA/BFA) Minted: {jackpot.total_minted}</p>
+          <p>Total (GFA/BFA): {jackpot.total}</p>
         </div>
       </div>
 
