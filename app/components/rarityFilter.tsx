@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 
 interface Props {
   selected: number[]
@@ -31,7 +32,12 @@ export default function RarityFilter({ selected, onToggle }: Props) {
           }`}
           title={rarityNames[rarity]}
         >
-          <img src={rarityIcons[rarity]} alt={rarityNames[rarity]} className="w-10 h-10" />
+        <Image 
+          src={rarityIcons[rarity]} 
+          alt={rarityNames[rarity]} 
+          width={100}
+          height={150}
+        />
           <span className="text-xs mt-1">{rarityNames[rarity]}</span>
         </button>
       ))}

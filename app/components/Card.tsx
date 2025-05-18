@@ -1,10 +1,12 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { CardDetail } from '../types/cardDetails'
 import { MintHistoryResponse } from '../types/mintHistory'
 import { PackJackpotCard } from '../types/packJackpot'
 import Modal from './Modal'
+
 
 interface Props {
   jackpot: PackJackpotCard
@@ -52,9 +54,11 @@ export default function Card({ jackpot, card }: Props) {
   return (
     <>
       <div className="flex w-full rounded border p-2 gap-4 items-center">
-        <img
+        <Image
           src={imageUrl}
           alt={card.name}
+          width={100}
+          height={150}          
           className="h-full max-h-[200px] w-auto object-contain"
         />
         <div className="flex-1 space-y-1">

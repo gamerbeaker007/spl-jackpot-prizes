@@ -1,7 +1,8 @@
+import { MintHistoryResponse } from '@/app/types/mintHistory'
 import { NextRequest, NextResponse } from 'next/server'
 
 type CacheEntry = {
-  data: any
+  data: MintHistoryResponse
   timestamp: number
 }
 
@@ -37,7 +38,13 @@ export async function GET(req: NextRequest) {
     cache.set(cacheKey, { data, timestamp: now })
 
     return NextResponse.json(data)
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Fetch error:', error.message)
+    } else {
+      console.error('Unknown error during fetch.')
+  }
+
     return NextResponse.json({ error: 'Failed to fetch mint history' }, { status: 500 })
   }
 }
