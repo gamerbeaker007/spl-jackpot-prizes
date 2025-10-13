@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { Container, Box } from '@mui/material'
 import RarityFilter from './rarityFilter'
 import Card from './Card'
 import { PackJackpotCard } from '../types/packJackpot'
@@ -29,15 +30,27 @@ export default function ClientCardGrid({ jackpotData, cardData }: Props) {
   }, [jackpotData, cardData, selectedRarities])
 
   return (
-    <>
-      <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
+    <Container maxWidth="xl">
+      <Box sx={{ mb: 4 }}>
+        <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
+      </Box>
 
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <Box 
+        sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { 
+            xs: '1fr', 
+            sm: 'repeat(2, 1fr)', 
+            md: 'repeat(3, 1fr)' 
+          }, 
+          gap: 3 
+        }}
+      >
         {filteredCards.map((jackpot) => {
           const card = cardData.find((c) => c.id === jackpot.card_detail_id)
           return card ? <Card key={card.id} jackpot={jackpot} card={card} /> : null
         })}
-      </div>
-    </>
+      </Box>
+    </Container>
   )
 }

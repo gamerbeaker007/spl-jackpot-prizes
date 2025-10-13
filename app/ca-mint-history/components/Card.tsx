@@ -10,9 +10,9 @@ import {
   IconButton 
 } from '@mui/material'
 import { Info } from '@mui/icons-material'
-import { CardDetail } from '../ca-mint-history/types/cardDetails'
-import { PackJackpotCard } from '../ca-mint-history/types/packJackpot'
-import { useMintData } from '../ca-mint-history/hooks/useMintData'
+import { CardDetail } from '../types/cardDetails'
+import { PackJackpotCard } from '../types/packJackpot'
+import { useMintData } from '../hooks/useMintData'
 import Modal from './Modal'
 
 interface Props {
