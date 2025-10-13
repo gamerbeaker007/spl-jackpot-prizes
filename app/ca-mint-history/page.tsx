@@ -1,8 +1,8 @@
 'use client'
 
-import { Box, CircularProgress, Alert } from '@mui/material'
+import { Alert, Box, CircularProgress } from '@mui/material'
 import ClientCardGrid from './components/ClientCardGrid'
-import { useCardData } from '../hooks/useCardData'
+import { useCardData } from './hooks/useCardData'
 
 export default function CAMintHistoryPage() {
   const { jackpotData, cardData, loading, error } = useCardData({ edition: 14 })

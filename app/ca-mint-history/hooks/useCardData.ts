@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
-import { CardDetail } from '../ca-mint-history/types/cardDetails'
-import { PackJackpotCard } from '../ca-mint-history/types/packJackpot'
+import { useCallback, useEffect, useState } from 'react'
+import { CardDetail } from '../types/cardDetails'
+import { PackJackpotCard } from '../types/packJackpot'
 
 interface UseCardDataReturn {
   jackpotData: PackJackpotCard[]
@@ -17,7 +17,7 @@ interface UseCardDataOptions {
 
 export function useCardData(options: UseCardDataOptions = {}): UseCardDataReturn {
   const { edition = 14, autoFetch = true } = options
-  
+
   const [jackpotData, setJackpotData] = useState<PackJackpotCard[]>([])
   const [cardData, setCardData] = useState<CardDetail[]>([])
   const [loading, setLoading] = useState<boolean>(false)

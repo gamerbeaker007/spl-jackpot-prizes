@@ -15,11 +15,11 @@ export const TOKEN_ICON_MAPPING: Record<string, string> = {
 
 // Token display names
 export const TOKEN_DISPLAY_NAMES: Record<string, string> = {
-  BETA: 'Beta Edition',
-  CHAOS: 'Chaos Legion',
-  NIGHTMARE: 'Nightmare Edition',
-  PLOT: 'Land Plot',
-  RIFT: 'Rift Edition',
+  BETA: 'Beta Pack',
+  CHAOS: 'Chaos Legion Pack',
+  NIGHTMARE: 'Nightmare Pack',
+  PLOT: 'Land Plot Claim',
+  RIFT: 'Riftwatcher Pack',
   THE_PROVEN_TITLE: 'The Proven Title',
   THE_VETERAN_TITLE: 'The Veteran Title',
   THE_RENOWNED_TITLE: 'The Renowned Title',
@@ -27,7 +27,7 @@ export const TOKEN_DISPLAY_NAMES: Record<string, string> = {
 
 // Get icon URL for token
 export function getTokenIcon(token: string): string {
-  return TOKEN_ICON_MAPPING[token] || `${WEB_URL}website/icon_dec.png`; // Fallback to DEC icon
+  return TOKEN_ICON_MAPPING[token] || `${WEB_URL}website/land/deedOverview/hammer.svg`; // Fallback to Hammer icon
 }
 
 // Get display name for token

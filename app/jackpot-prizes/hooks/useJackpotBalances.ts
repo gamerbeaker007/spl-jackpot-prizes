@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Balance } from '../types/balances'
 
 interface UseJackpotBalancesReturn {
   jackpotData: Balance[]
+  jackpotSkinsData: Balance[]
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
@@ -13,10 +14,25 @@ interface UseJackpotBalancesOptions {
   autoFetch?: boolean
 }
 
+
+async function fetchBalances(username: string): Promise<Balance[]> {
+  const response = await fetch(`/api/jackpot-balances?username=${username}`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch jackpot data for ${username}: ${response.status}`)
+  }
+  const result = await response.json()
+  if (result.error) {
+    throw new Error(result.error)
+  }
+  return result
+}
+
+
 export function useJackpotBalances(options: UseJackpotBalancesOptions = {}): UseJackpotBalancesReturn {
   const { autoFetch } = options
 
   const [jackpotData, setJackpotData] = useState<Balance[]>([])
+  const [jackpotSkinsData, setJackpotSkinsData] = useState<Balance[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,22 +41,14 @@ export function useJackpotBalances(options: UseJackpotBalancesOptions = {}): Use
     setError(null)
 
     try {
-      const jackpotResponse = await fetch(`/api/jackpot-balances`, {
-        cache: 'force-cache',
-      })
-
-      if (!jackpotResponse.ok) {
-        throw new Error(`Failed to fetch jackpot data: ${jackpotResponse.status}`)
-      }
-
-      const jackpotResult = await jackpotResponse.json()
-
-      // Check for API-level errors
-      if (jackpotResult.error) {
-        throw new Error(jackpotResult.error)
-      }
-
+      // Fetch jackpot balances
+      const jackpotResult = await fetchBalances('$JACKPOT')
       setJackpotData(jackpotResult)
+      console.log('Fetched jackpot data:', jackpotResult)
+      // Fetch jackpot skins balances
+      const jackpotSkinsResult = await fetchBalances('$JACKPOT_SKINS')
+      console.log('Fetched jackpot skins data:', jackpotSkinsResult)
+      setJackpotSkinsData(jackpotSkinsResult)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data'
       setError(errorMessage)
@@ -58,6 +66,7 @@ export function useJackpotBalances(options: UseJackpotBalancesOptions = {}): Use
 
   return {
     jackpotData,
+    jackpotSkinsData,
     loading,
     error,
     refetch: fetchData

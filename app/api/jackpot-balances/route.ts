@@ -2,10 +2,12 @@ import { fetchBalances } from '@/lib/api/splApi';
 import logger from '@/lib/log/logger.server';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     logger.info('Jackpot balances API route called');
-    const data = await fetchBalances();
+    const { searchParams } = new URL(request.url);
+    const username = searchParams.get('username') ?? '$JACKPOT';
+    const data = await fetchBalances(username);
     logger.info(`Jackpot balances API route completed: ${data.length} balances`);
     return NextResponse.json(data);
   } catch (error: unknown) {
