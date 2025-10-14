@@ -72,7 +72,7 @@ export default function HomePage() {
             Jackpot Prizes
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Overview of current jackpot prizes including tokens, titles, and other rewards available in the so-called "Gator Buckets".
+            Overview of current jackpot prizes including tokens, titles, and other rewards available in the so-called &quot;Gator Buckets&quot;.
           </Typography>
           <Button
             onClick={handleNavigateToJackpotPrizes}
