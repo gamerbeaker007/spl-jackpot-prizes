@@ -1,12 +1,12 @@
-import { fetchJackPotPrizes } from '@/lib/api/splApi';
+import { fetchJackPotSkins } from '@/lib/api/splApi';
 import logger from '@/lib/log/logger.server';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    logger.info('Jackpot prizes API route called');
-    const data = await fetchJackPotPrizes();
-    logger.info(`Jackpot prizes API route completed: ${data.length} prizes`);
+    logger.info('Jackpot skins API route called');
+    const data = await fetchJackPotSkins();
+    logger.info(`Jackpot skins API route completed: ${data.length} skins`);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
-import { PackJackpotCard } from '../types/packJackpot'
+import { CardDetail } from '../ca-mint-history/types/cardDetails'
 
-interface UseCardDataReturn {
-  jackpotData: PackJackpotCard[]
+interface UseCardDetailsReturn {
+  cardDetails: CardDetail[]
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
 }
 
-interface UseCardDataOptions {
-  edition?: number
+interface UseCardDetailsOptions {
   autoFetch?: boolean
 }
 
-export function useJackPotOverview(options: UseCardDataOptions = {}): UseCardDataReturn {
-  const { edition = 14, autoFetch = true } = options
-  const [jackpotData, setJackpotData] = useState<PackJackpotCard[]>([])
+export function useCardDetails(options: UseCardDetailsOptions = {}): UseCardDetailsReturn {
+  const { autoFetch = true } = options
+  const [cardDetails, setCardDetails] = useState<CardDetail[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,22 +23,23 @@ export function useJackPotOverview(options: UseCardDataOptions = {}): UseCardDat
     setError(null)
 
     try {
-      const jackpotResponse = await fetch(`/api/jackpot-overview?edition=${edition}`, {})
+      const cardResponse = await fetch('/api/card-details', {
+          cache: 'force-cache',
+        })
 
-      if (!jackpotResponse.ok) {
-        throw new Error(`Failed to fetch jackpot data: ${jackpotResponse.status}`)
+      if (!cardResponse.ok) {
+        throw new Error(`Failed to fetch card data: ${cardResponse.status}`)
       }
 
 
-      const jackpotResult = await jackpotResponse.json()
-
+      const cardResult = await cardResponse.json()
 
       // Check for API-level errors
-      if (jackpotResult.error) {
-        throw new Error(jackpotResult.error)
+      if (cardResult.error) {
+        throw new Error(cardResult.error)
       }
 
-      setJackpotData(jackpotResult)
+      setCardDetails(cardResult)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch data'
       setError(errorMessage)
@@ -47,7 +47,7 @@ export function useJackPotOverview(options: UseCardDataOptions = {}): UseCardDat
     } finally {
       setLoading(false)
     }
-  }, [edition])
+  }, [])
 
   useEffect(() => {
     if (autoFetch) {
@@ -56,7 +56,7 @@ export function useJackPotOverview(options: UseCardDataOptions = {}): UseCardDat
   }, [fetchData, autoFetch])
 
   return {
-    jackpotData,
+    cardDetails,
     loading,
     error,
     refetch: fetchData

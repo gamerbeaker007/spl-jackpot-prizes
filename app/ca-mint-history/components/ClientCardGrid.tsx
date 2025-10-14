@@ -1,18 +1,18 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Container, Box } from '@mui/material'
-import RarityFilter from './rarityFilter'
-import Card from './Card'
-import { PackJackpotCard } from '../types/packJackpot'
+import { Box, Container } from '@mui/material'
+import { useMemo, useState } from 'react'
 import { CardDetail } from '../types/cardDetails'
+import { PackJackpotCard } from '../types/packJackpot'
+import Card from './Card'
+import RarityFilter from './rarityFilter'
 
 interface Props {
   jackpotData: PackJackpotCard[]
-  cardData: CardDetail[]
+  cardDetails: CardDetail[]
 }
 
-export default function ClientCardGrid({ jackpotData, cardData }: Props) {
+export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([])
 
   const toggleRarity = (rarity: number) => {
@@ -24,10 +24,10 @@ export default function ClientCardGrid({ jackpotData, cardData }: Props) {
   const filteredCards = useMemo(() => {
     if (selectedRarities.length === 0) return jackpotData
     return jackpotData.filter((jackpot) => {
-      const card = cardData.find((c) => c.id === jackpot.card_detail_id)
+      const card = cardDetails.find((c) => c.id === jackpot.card_detail_id)
       return card && selectedRarities.includes(card.rarity)
     })
-  }, [jackpotData, cardData, selectedRarities])
+  }, [jackpotData, cardDetails, selectedRarities])
 
   return (
     <Container maxWidth="xl">
@@ -35,19 +35,19 @@ export default function ClientCardGrid({ jackpotData, cardData }: Props) {
         <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
       </Box>
 
-      <Box 
-        sx={{ 
-          display: 'grid', 
-          gridTemplateColumns: { 
-            xs: '1fr', 
-            sm: 'repeat(2, 1fr)', 
-            md: 'repeat(3, 1fr)' 
-          }, 
-          gap: 3 
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)'
+          },
+          gap: 3
         }}
       >
         {filteredCards.map((jackpot) => {
-          const card = cardData.find((c) => c.id === jackpot.card_detail_id)
+          const card = cardDetails.find((c) => c.id === jackpot.card_detail_id)
           return card ? <Card key={card.id} jackpot={jackpot} card={card} /> : null
         })}
       </Box>

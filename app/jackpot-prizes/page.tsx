@@ -2,75 +2,26 @@
 
 import {
   Alert,
-  Avatar,
   Box,
-  Card,
-  CardContent,
   CircularProgress,
   Container,
   Divider,
   Typography
 } from '@mui/material'
-import { useJackpotBalances } from './hooks/useJackpotBalances'
-import { getTokenDisplayName, getTokenIcon } from './lib/tokenIcons'
-import { Balance } from './types/balances'
+import { useCardDetails } from '../hooks/useCardDetails'
+import { BalanceCard } from './component/BalanceCard'
+import { SkinsCard } from './component/SkinsCard'
+import { useJackpotPrizes } from './hooks/useJackpotPrizes'
+import { useJackpotSkins } from './hooks/useJackpotSkins'
 
 // Helper component to render a single balance card
-function BalanceCard({ item }: { item: Balance }) {
-  return (
-    <Card
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        '&:hover': {
-          boxShadow: 4,
-          transform: 'translateY(-2px)',
-          transition: 'all 0.2s ease-in-out'
-        }
-      }}
-    >
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-        <Avatar
-          src={getTokenIcon(item.token)}
-          alt={item.token}
-          sx={{
-            width: 64,
-            height: 64,
-            mb: 2,
-            backgroundColor: 'transparent',
-            border: '2px solid',
-            borderColor: 'divider'
-          }}
-        />
-
-        <Typography variant="h6" fontWeight="bold" gutterBottom textAlign="center">
-          {getTokenDisplayName(item.token)}
-        </Typography>
-
-        {/* <Typography variant="body2" color="text.secondary" gutterBottom textAlign="center">
-          {item.token}
-        </Typography> */}
-
-        <Box sx={{ mt: 'auto', pt: 2 }}>
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            color={item.balance > 0 ? 'success.main' : 'text.secondary'}
-            textAlign="center"
-          >
-            {item.balance.toLocaleString()}
-          </Typography>
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}
 
 export default function JackpotPrizesPage() {
-  const { jackpotData, jackpotSkinsData, loading, error } = useJackpotBalances({ autoFetch: true })
+  const { jackpotPrizes, loading, error } = useJackpotPrizes({ autoFetch: true })
+  const { jackpotSkins, loading: loadingSkins, error: errorSkins } = useJackpotSkins({ autoFetch: true })
+  const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
 
-  if (loading) {
+  if (loading || loadingSkins || loadingCardDetails) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Box
@@ -85,11 +36,11 @@ export default function JackpotPrizesPage() {
     )
   }
 
-  if (error) {
+  if (error || errorSkins || errorCardDetails) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Alert severity="error">
-          Failed to load jackpot data: {error}
+          Failed to load jackpot data: {error || errorSkins || errorCardDetails}
         </Alert>
       </Container>
     )
@@ -115,12 +66,12 @@ export default function JackpotPrizesPage() {
           mb: 6
         }}
       >
-        {jackpotData.map((item) => (
+        {jackpotPrizes.map((item) => (
           <BalanceCard key={`jackpot-${item.token}`} item={item} />
         ))}
       </Box>
 
-      {jackpotData.length === 0 && (
+      {jackpotPrizes.length === 0 && (
         <Box textAlign="center" mb={6}>
           <Typography variant="h6" color="text.secondary">
             No jackpot data available
@@ -148,12 +99,12 @@ export default function JackpotPrizesPage() {
           gap: 3
         }}
       >
-        {jackpotSkinsData.map((item) => (
-          <BalanceCard key={`jackpot-skins-${item.token}`} item={item} />
+        {jackpotSkins.map((item) => (
+          <SkinsCard key={`jackpot-skins-${item.skin_detail_id}`} item={item} cardDetails={cardDetails} />
         ))}
       </Box>
 
-      {jackpotSkinsData.length === 0 && (
+      {jackpotSkins.length === 0 && (
         <Box textAlign="center" mt={4}>
           <Typography variant="h6" color="text.secondary">
             No jackpot skins data available
