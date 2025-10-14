@@ -19,24 +19,24 @@ export default function HomePage() {
       <Typography variant="h3" component="h1" gutterBottom align="center">
         SPL Data Dashboard
       </Typography>
-      
+
       <Typography variant="h6" color="text.secondary" align="center" sx={{ mb: 6 }}>
-        Explore Splinterlands card pack jackpot data and mint histories
+        Explore Splinterlands jackpot prizes and mint histories
       </Typography>
 
-      <Box 
-        sx={{ 
-          display: 'grid', 
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, 
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
           gap: 4,
-          mt: 4 
+          mt: 4
         }}
       >
-        <Box 
-          sx={{ 
-            p: 3, 
-            border: 1, 
-            borderColor: 'divider', 
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: 'divider',
             borderRadius: 2,
             textAlign: 'center',
             backgroundColor: 'background.paper'
@@ -46,11 +46,11 @@ export default function HomePage() {
             CA Mint History
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Detailed view of individual card mint histories with foil information and player ownership data.
+            Detailed view of individual card mint histories for the Conclave Arcana Set with foil information and the lucky winners.
           </Typography>
-          <Button 
+          <Button
             onClick={handleNavigateToMintHistory}
-            variant="contained" 
+            variant="contained"
             size="large"
             fullWidth
           >
@@ -58,11 +58,11 @@ export default function HomePage() {
           </Button>
         </Box>
 
-        <Box 
-          sx={{ 
-            p: 3, 
-            border: 1, 
-            borderColor: 'divider', 
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: 'divider',
             borderRadius: 2,
             textAlign: 'center',
             backgroundColor: 'background.paper'
@@ -72,11 +72,11 @@ export default function HomePage() {
             Jackpot Prizes
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Overview of current jackpot prizes including tokens, titles, and other rewards available.
+            Overview of current jackpot prizes including tokens, titles, and other rewards available in the so-called "Gator Buckets".
           </Typography>
-          <Button 
+          <Button
             onClick={handleNavigateToJackpotPrizes}
-            variant="contained" 
+            variant="contained"
             size="large"
             fullWidth
           >
