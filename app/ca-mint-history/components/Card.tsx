@@ -29,7 +29,7 @@ export default function Card({ jackpot, card }: Props) {
   useEffect(() => {
     // Fetch mint data for all foil types if not already fetched
     FOIL_TYPES.forEach((foil) => {
-      if (!mintData[foil]) {  
+      if (!mintData[foil]) {
         fetchMintData(card.id, foil)
       }
     }
@@ -52,7 +52,7 @@ export default function Card({ jackpot, card }: Props) {
                 src={imageUrl}
                 alt={card.name}
                 width={100}
-                height={150}          
+                height={150}
                 className="card-image"
               />
             </Box>
@@ -60,11 +60,11 @@ export default function Card({ jackpot, card }: Props) {
               <Typography variant="h6" component="h2" gutterBottom>
                 {card.name}
               </Typography>
-              
+
               <Box sx={{ mt: 2, mb: 2 }}>
                 {FOIL_TYPES.map((foil) => {
                   const data = mintData[foil]
-                  
+
                   return (
                     <Box key={foil} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                       <Typography variant="body2">
@@ -72,8 +72,10 @@ export default function Card({ jackpot, card }: Props) {
                         {!data
                           ? 'Loading.....'
                           : foil === 3
-                            ? `${data?.total || 0}`
-                            : `${data?.total_minted || 0}/${data?.total || 0}`}
+                          ? card.name === "Archmage Yabanius"
+                            ? `${data?.total_minted || 0} / ${data?.total || 0}`
+                            : `${data?.total || 0}`
+                          : `${data?.total_minted || 0} / ${data?.total || 0}`}
                       </Typography>
 
                       {data && data.mints.length > 0 && (
@@ -89,7 +91,7 @@ export default function Card({ jackpot, card }: Props) {
                   )
                 })}
               </Box>
-              
+
               <Typography variant="body2" sx={{ mb: 0.5 }}>
                 Total (GFA/BFA) Minted: {jackpot.total_minted}
               </Typography>
