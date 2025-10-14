@@ -1,18 +1,18 @@
 'use client'
 
+import { Info } from '@mui/icons-material'
+import {
+  Box,
+  CardContent,
+  IconButton,
+  Card as MuiCard,
+  Typography
+} from '@mui/material'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { 
-  Card as MuiCard, 
-  CardContent, 
-  Typography, 
-  Box, 
-  IconButton 
-} from '@mui/material'
-import { Info } from '@mui/icons-material'
+import { useMintData } from '../hooks/useMintData'
 import { CardDetail } from '../types/cardDetails'
 import { PackJackpotCard } from '../types/packJackpot'
-import { useMintData } from '../hooks/useMintData'
 import Modal from './Modal'
 
 interface Props {
@@ -105,7 +105,7 @@ export default function Card({ jackpot, card }: Props) {
       <Modal
         isOpen={openFoil !== null && !!mintData[openFoil]}
         onClose={() => setOpenFoil(null)}
-        title={openFoil !== null ? foilLabel(openFoil) + ' Mints' : undefined}
+        title={openFoil !== null ? `${card.name} - ${foilLabel(openFoil)} Mints` : undefined}
       >
         <Box sx={{ '& > div': { mb: 0.5 } }}>
           {openFoil !== null &&

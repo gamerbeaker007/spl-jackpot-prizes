@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { fetchMintHistory } from '@/lib/api/splApi'
+import mintHistoryCacheService from '@/lib/cache/mintHistoryCacheService'
 import logger from '@/lib/log/logger.server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
   const foil = req.nextUrl.searchParams.get('foil')
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const data = await fetchMintHistory(foilNum, cardIdNum);
+    const data = await mintHistoryCacheService.getMintHistory(foilNum, cardIdNum);
     return NextResponse.json(data);
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

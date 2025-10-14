@@ -29,17 +29,12 @@ export function useMintData(): UseMintDataReturn {
       await Promise.all(
         foilsToFetch.map(async (foil) => {
           try {
-            const res = await fetch(
-              `/api/mint_history?foil=${foil}&card_detail_id=${cardId}`,
-              {
-                cache: 'force-cache', // Use cache if available
-              }
-            )
-            
+            const res = await fetch(`/api/mint_history?foil=${foil}&card_detail_id=${cardId}`)
+
             if (!res.ok) {
               throw new Error(`HTTP error! status: ${res.status}`)
             }
-            
+
             const data = await res.json()
             results[foil] = data
           } catch (error) {
@@ -62,7 +57,7 @@ export function useMintData(): UseMintDataReturn {
       setLoadingStates(prev => ({ ...prev, ...loadingClears }))
     }
   }, [])
-  
+
   return {
     mintData,
     loadingStates,

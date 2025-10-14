@@ -1,27 +1,27 @@
 'use client'
 
-import { 
-  Box, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper, 
-  Avatar, 
-  Typography, 
-  CircularProgress, 
+import {
   Alert,
-  Container
+  Box,
+  CircularProgress,
+  Container,
+  Divider,
+  Typography
 } from '@mui/material'
-import { useJackpotBalances } from './hooks/useJackpotBalances'
-import { getTokenDisplayName, getTokenIcon } from './lib/tokenIcons'
+import { useCardDetails } from '../hooks/useCardDetails'
+import { BalanceCard } from './component/BalanceCard'
+import { SkinsCard } from './component/SkinsCard'
+import { useJackpotPrizes } from './hooks/useJackpotPrizes'
+import { useJackpotSkins } from './hooks/useJackpotSkins'
+
+// Helper component to render a single balance card
 
 export default function JackpotPrizesPage() {
-  const { jackpotData, loading, error } = useJackpotBalances({ autoFetch: true })
+  const { jackpotPrizes, loading, error } = useJackpotPrizes({ autoFetch: true })
+  const { jackpotSkins, loading: loadingSkins, error: errorSkins } = useJackpotSkins({ autoFetch: true })
+  const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
 
-  if (loading) {
+  if (loading || loadingSkins || loadingCardDetails) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Box
@@ -36,82 +36,78 @@ export default function JackpotPrizesPage() {
     )
   }
 
-  if (error) {
+  if (error || errorSkins || errorCardDetails) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Alert severity="error">
-          Failed to load jackpot data: {error}
+          Failed to load jackpot data: {error || errorSkins || errorCardDetails}
         </Alert>
       </Container>
     )
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
+      {/* First Part - Jackpot Data */}
       <Typography variant="h4" component="h1" gutterBottom>
-        Jackpot Prizes
+        Jackpot Data
       </Typography>
-      
-      <TableContainer component={Paper} sx={{ mt: 3 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography variant="h6">Prize</Typography>
-              </TableCell>
-              <TableCell align="center">
-                <Typography variant="h6">Icon</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="h6">Balance</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {jackpotData.map((item) => (
-              <TableRow 
-                key={item.token}
-                sx={{ '&:hover': { backgroundColor: 'action.hover' } }}
-              >
-                <TableCell>
-                  <Typography variant="body1" fontWeight="medium">
-                    {getTokenDisplayName(item.token)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {item.token}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Avatar
-                    src={getTokenIcon(item.token)}
-                    alt={item.token}
-                    sx={{ 
-                      width: 40, 
-                      height: 40, 
-                      mx: 'auto',
-                      backgroundColor: 'transparent'
-                    }}
-                  />
-                </TableCell>
-                <TableCell align="right">
-                  <Typography 
-                    variant="h6" 
-                    fontWeight="bold"
-                    color={item.balance > 0 ? 'success.main' : 'text.secondary'}
-                  >
-                    {item.balance.toLocaleString()}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
 
-      {jackpotData.length === 0 && (
-        <Box textAlign="center" mt={4}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            lg: 'repeat(4, 1fr)'
+          },
+          gap: 3,
+          mb: 6
+        }}
+      >
+        {jackpotPrizes.map((item) => (
+          <BalanceCard key={`jackpot-${item.token}`} item={item} />
+        ))}
+      </Box>
+
+      {jackpotPrizes.length === 0 && (
+        <Box textAlign="center" mb={6}>
           <Typography variant="h6" color="text.secondary">
             No jackpot data available
+          </Typography>
+        </Box>
+      )}
+
+      {/* Divider */}
+      <Divider sx={{ my: 4 }} />
+
+      {/* Second Part - Jackpot Skins Data */}
+      <Typography variant="h4" component="h2" gutterBottom>
+        Jackpot Skins Data
+      </Typography>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            lg: 'repeat(4, 1fr)'
+          },
+          gap: 3
+        }}
+      >
+        {jackpotSkins.map((item) => (
+          <SkinsCard key={`jackpot-skins-${item.skin_detail_id}`} item={item} cardDetails={cardDetails} />
+        ))}
+      </Box>
+
+      {jackpotSkins.length === 0 && (
+        <Box textAlign="center" mt={4}>
+          <Typography variant="h6" color="text.secondary">
+            No jackpot skins data available
           </Typography>
         </Box>
       )}

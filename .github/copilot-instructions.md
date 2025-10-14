@@ -8,17 +8,18 @@ This is a Next.js 15 app displaying Splinterlands card pack jackpot data. It sho
 ### Core Data Sources
 - **Jackpot Data**: `fetchPackJackpotOverview()` from `lib/api/splApi.ts`
 - **Card Details**: `fetchCardDetails()` from `lib/api/splApi.ts`
-- **Mint History**: `fetchMintHistory()` from `lib/api/splApi.ts`
+- **Mint History**: `getMintHistory()` from `lib/cache/mintHistoryCacheService.ts`
 
 ### Data Flow Pattern
 1. `app/page.tsx` uses SPL API service functions for server-side data fetching
 2. Passes data to `ClientCardGrid` component for client-side filtering
 3. `Card` components fetch individual mint histories via `/api/mint_history` route
-4. API route now uses SPL API service with NodeCache-based caching
+4. API route uses `mintHistoryCacheService` which handles caching and SPL API calls
 
 ### Backend Services Architecture
-- **SPL API Service** (`lib/api/splApi.ts`): Centralized Splinterlands API client with axios and retry logic
-- **Cache Server** (`lib/cache/cacheServer.ts`): NodeCache-based caching with TTL management
+- **SPL API Service** (`lib/api/splApi.ts`): Direct Splinterlands API client with axios and retry logic (no caching)
+- **Cache Server** (`lib/cache/cacheServer.ts`): Generic NodeCache-based caching with TTL management
+- **Mint History Cache Service** (`lib/cache/mintHistoryCacheService.ts`): Specialized service that handles mint history caching and API calls
 - **Logger** (`lib/log/logger.server.ts`): Structured server-side logging with different levels
 
 ### Key Type Definitions
@@ -59,11 +60,10 @@ const FOIL_TYPES = [3, 2, 4] // Black Foil, Gold Foil Arcane, Black Foil Arcane
 - Each foil type requires separate API call to mint_history
 
 ### Caching Strategy
-- **NodeCache**: TTL-based caching with automatic cleanup
-- **Card Details**: 1-hour cache (3600 seconds)
-- **Jackpot Data**: 1-hour cache (3600 seconds)
-- **Mint History**: 30-minute cache (1800 seconds)
-- **Cache Keys**: `card_details`, `pack_jackpot_overview_{edition}`, `mint_history_{foil}_{cardId}`
+- **NodeCache**: TTL-based caching with automatic cleanup (via `cacheServer`)
+- **Mint History Only**: Only mint history data is cached (30-minute cache) to prevent API rate limits
+- **Direct API Calls**: Card details, jackpot data, and balances are fetched directly from API for fresh data
+- **Cache Keys**: `mint_history_{foil}_{cardId}` (handled internally by `mintHistoryCacheService`)
 
 ### Error Handling & Retry Logic
 - **Exponential backoff**: 10 retries with 1000ms base delay

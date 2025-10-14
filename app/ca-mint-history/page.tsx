@@ -1,13 +1,15 @@
 'use client'
 
-import { Box, CircularProgress, Alert } from '@mui/material'
+import { Alert, Box, CircularProgress } from '@mui/material'
+import { useCardDetails } from '../hooks/useCardDetails'
 import ClientCardGrid from './components/ClientCardGrid'
-import { useCardData } from '../hooks/useCardData'
+import { useJackPotOverview } from './hooks/useCardData'
 
 export default function CAMintHistoryPage() {
-  const { jackpotData, cardData, loading, error } = useCardData({ edition: 14 })
+  const { jackpotData, loading, error } = useJackPotOverview({ edition: 14 })
+  const { cardDetails, loading: loadingCardDetails } = useCardDetails({ autoFetch: true })
 
-  if (loading) {
+  if (loading || loadingCardDetails) {
     return (
       <Box
         display="flex"
@@ -30,5 +32,5 @@ export default function CAMintHistoryPage() {
     )
   }
 
-  return <ClientCardGrid jackpotData={jackpotData} cardData={cardData} />
+  return <ClientCardGrid jackpotData={jackpotData} cardDetails={cardDetails} />
 }
