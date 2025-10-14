@@ -1,16 +1,26 @@
 import { CardDetail } from "@/app/ca-mint-history/types/cardDetails";
 import { Avatar, Box, Card, CardContent, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
-import { Skins } from "../types/skins";
 import { WEB_URL } from "../lib/tokenIcons";
+import { Skins } from "../types/skins";
 
 export function SkinsCard({ item, cardDetails }: { item: Skins, cardDetails: CardDetail[] }) {
   const cardDetailId = item.card_detail_id;
 
-  const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
-  const cardName = cardDetail?.name || '';
-  const imageUrl = `${WEB_URL}cards_v2.2/${item.skin}/${encodeURIComponent(cardName)}.jpg`;
-  return (
+const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
+const cardName = cardDetail?.name || '';
+
+// Use custom image URLs for specific card names
+let imageUrl = `${WEB_URL}cards_v2.2/${item.skin}/${encodeURIComponent(cardName)}.jpg`;
+if (cardName === "Venari Marksrat") {
+  imageUrl = `${WEB_URL}cards_soulbound/Spooky/Venari%20Marksrat.jpg`;
+} else if (cardName === "Kelya Frendul") {
+  imageUrl = `${WEB_URL}cards_chaos/Spooky/Kelya%20Frendul.jpg`;
+} else if (cardName === "Uraeus") {
+  imageUrl = `${WEB_URL}cards_chaos/Spooky/Uraeus.jpg`;
+}
+
+return (
     <Card
       sx={{
         height: '100%',
