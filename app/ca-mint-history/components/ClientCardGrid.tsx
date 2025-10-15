@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { CardDetail } from '../types/cardDetails'
 import { PackJackpotCard } from '../types/packJackpot'
@@ -31,6 +31,12 @@ export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
 
   return (
     <Container maxWidth="xl">
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Typography variant="h4" align="center">
+          Conclave Arcana Jackpot Prize Overview
+        </Typography>
+      </Box>
+
       <Box sx={{ mb: 4 }}>
         <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
       </Box>
