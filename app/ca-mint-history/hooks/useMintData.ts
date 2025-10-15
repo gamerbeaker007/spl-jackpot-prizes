@@ -1,66 +1,81 @@
-import { useState, useCallback } from 'react'
-import { MintHistoryResponse } from '../types/mintHistory'
+import { useCallback, useState } from 'react'
 
-const FOIL_TYPES = [3, 2, 4]
-
-interface UseMintDataReturn {
-  mintData: Record<number, MintHistoryResponse | null>
-  loadingStates: Record<number, boolean>
-  fetchMintData: (cardId: number, foil?: number) => Promise<void>
+interface MintHistoryItem {
+  uid: string
+  mint: string
+  mint_player: string
 }
 
-export function useMintData(): UseMintDataReturn {
-  const [mintData, setMintData] = useState<Record<number, MintHistoryResponse | null>>({})
-  const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({})
+interface MintHistoryResponse {
+  total: number
+  total_minted: number
+  mints: MintHistoryItem[]
+}
 
-  const fetchMintData = useCallback(async (cardId: number, specificFoil?: number) => {
-    const foilsToFetch = specificFoil ? [specificFoil] : FOIL_TYPES
+interface MintDataState {
+  [foil: number]: MintHistoryResponse | null
+}
 
-    // Set loading states
-    const loadingUpdates: Record<number, boolean> = {}
-    foilsToFetch.forEach(foil => {
-      loadingUpdates[foil] = true
-    })
-    setLoadingStates(prev => ({ ...prev, ...loadingUpdates }))
+interface LoadingState {
+  [foil: number]: boolean
+}
+
+export function useMintData() {
+  const [mintData, setMintData] = useState<MintDataState>({})
+  const [loading, setLoading] = useState<LoadingState>({})
+  const [errors, setErrors] = useState<{ [foil: number]: string }>({})
+
+  const fetchMintData = useCallback(async (cardId: number, foil: number) => {
+    // Don't fetch if already loading or already have data
+    if (loading[foil] || mintData[foil]) {
+      return
+    }
+
+    setLoading(prev => ({ ...prev, [foil]: true }))
+    setErrors(prev => ({ ...prev, [foil]: '' }))
 
     try {
-      const results: Record<number, MintHistoryResponse | null> = {}
-
-      await Promise.all(
-        foilsToFetch.map(async (foil) => {
-          try {
-            const res = await fetch(`/api/mint_history?foil=${foil}&card_detail_id=${cardId}`)
-
-            if (!res.ok) {
-              throw new Error(`HTTP error! status: ${res.status}`)
-            }
-
-            const data = await res.json()
-            results[foil] = data
-          } catch (error) {
-            console.error(`Failed to fetch mint data for foil ${foil}:`, error)
-            results[foil] = null
-          }
-        })
+      const response = await fetch(
+        `/api/mint_history?foil=${foil}&card_detail_id=${cardId}`,
+        {
+          cache: 'force-cache',
+          next: { revalidate: 1800 } // 30 minutes
+        }
       )
 
-      // Update mint data
-      setMintData(prev => ({ ...prev, ...results }))
+      if (!response.ok) {
+        throw new Error(`Failed to fetch mint data: ${response.status}`)
+      }
+
+      const data: MintHistoryResponse = await response.json()
+
+      setMintData(prev => ({ ...prev, [foil]: data }))
     } catch (error) {
-      console.error('Failed to fetch mint data:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      console.error(`Error fetching mint data for foil ${foil}:`, errorMessage)
+      setErrors(prev => ({ ...prev, [foil]: errorMessage }))
     } finally {
-      // Clear loading states
-      const loadingClears: Record<number, boolean> = {}
-      foilsToFetch.forEach(foil => {
-        loadingClears[foil] = false
-      })
-      setLoadingStates(prev => ({ ...prev, ...loadingClears }))
+      setLoading(prev => ({ ...prev, [foil]: false }))
     }
-  }, [])
+  }, [loading, mintData]) // Dependencies that should prevent unnecessary re-renders
+
+  const hasFoilData = useCallback((foil: number) => {
+    return !!mintData[foil]
+  }, [mintData])
+
+  const isLoading = useCallback((foil: number) => {
+    return !!loading[foil]
+  }, [loading])
+
+  const getError = useCallback((foil: number) => {
+    return errors[foil] || null
+  }, [errors])
 
   return {
     mintData,
-    loadingStates,
     fetchMintData,
+    hasFoilData,
+    isLoading,
+    getError
   }
 }

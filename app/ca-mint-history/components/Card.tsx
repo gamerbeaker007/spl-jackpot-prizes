@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMintData } from '../hooks/useMintData'
 import { CardDetail } from '../types/cardDetails'
 import { PackJackpotCard } from '../types/packJackpot'
@@ -20,27 +20,42 @@ interface Props {
   card: CardDetail
 }
 
-const FOIL_TYPES = [3, 2, 4]
+const DEFAULT_FOIL_TYPES = [3, 2, 4]
+const ALL_FOIL_TYPES = [0, 1, 2, 3, 4]
+  const FOIL_LABELS: Record<number, string> = {
+    0: 'Regular',
+    1: 'Gold',
+    2: 'Gold Foil Arcane',
+    3: 'Black Foil',
+    4: 'Black Foil Arcane'
+  }
 
 export default function Card({ jackpot, card }: Props) {
   const [openFoil, setOpenFoil] = useState<number | null>(null)
   const { mintData, fetchMintData } = useMintData()
 
+  const isArchmageYabanius = card.name === "Archmage Yabanius"
+  const foilTypes = useMemo(() =>
+    isArchmageYabanius ? ALL_FOIL_TYPES : DEFAULT_FOIL_TYPES,
+    [isArchmageYabanius]
+  )
+
   useEffect(() => {
     // Fetch mint data for all foil types if not already fetched
-    FOIL_TYPES.forEach((foil) => {
+    foilTypes.forEach((foil) => {
       if (!mintData[foil]) {
         fetchMintData(card.id, foil)
       }
     }
     )
-  }, [card.id, fetchMintData, mintData])
+  }, [card.id, fetchMintData, foilTypes, mintData])
 
 
   const imageUrl = `https://d36mxiodymuqjm.cloudfront.net/cards_v2.2/${encodeURIComponent(card.name)}.jpg`
 
-  const foilLabel = (foil: number) =>
-    foil === 2 ? 'Gold Foil Arcane' : foil === 3 ? 'Back Foil' : foil === 4 ? 'Black Foil Arcane' : `Foil ${foil}`
+  const foilLabel = (foil: number): string =>
+    FOIL_LABELS[foil] ?? `Foil ${foil}`
+
 
   return (
     <>
@@ -61,42 +76,42 @@ export default function Card({ jackpot, card }: Props) {
                 {card.name}
               </Typography>
 
-              <Box sx={{ mt: 2, mb: 2 }}>
-                {FOIL_TYPES.map((foil) => {
+                <Box sx={{ mt: 2, mb: 2 }}>
+                {foilTypes.map((foil) => {
                   const data = mintData[foil]
 
                   return (
-                    <Box key={foil} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                      <Typography variant="body2">
-                        <strong>{foilLabel(foil)}:</strong>{' '}
-                        {!data
-                          ? 'Loading.....'
-                          : foil === 3
-                          ? card.name === "Archmage Yabanius"
-                            ? `${data?.total_minted || 0} / ${data?.total || 0}`
-                            : `${data?.total || 0}`
-                          : `${data?.total_minted || 0} / ${data?.total || 0}`}
-                      </Typography>
+                  <Box key={foil} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body2">
+                    <strong>{foilLabel(foil)}:</strong>{' '}
+                    {!data
+                      ? 'Loading.....'
+                      : foil === 3
+                      ? isArchmageYabanius
+                      ? `${data?.total_minted || 0} / ${data?.total || 0}`
+                      : `${data?.total || 0}`
+                      : `${data?.total_minted || 0} / ${data?.total || 0}`}
+                    </Typography>
 
-                      {data && data.mints.length > 0 && (
-                        <IconButton
-                          size="small"
-                          onClick={() => setOpenFoil(foil)}
-                          sx={{ ml: 1, p: 0.5 }}
-                        >
-                          <Info fontSize="small" />
-                        </IconButton>
-                      )}
-                    </Box>
+                    {data && data.mints.length > 0 && (
+                    <IconButton
+                      size="small"
+                      onClick={() => setOpenFoil(foil)}
+                      sx={{p: 0.5 }}
+                    >
+                      <Info fontSize="small" />
+                    </IconButton>
+                    )}
+                  </Box>
                   )
                 })}
-              </Box>
+                </Box>
 
               <Typography variant="body2" sx={{ mb: 0.5 }}>
-                Total (GFA/BFA) Minted: {jackpot.total_minted}
+                Total {isArchmageYabanius ? "": "(GFA/BFA)"} Minted: {jackpot.total_minted}
               </Typography>
               <Typography variant="body2">
-                Total (GFA/BFA): {jackpot.total}
+                Total {isArchmageYabanius ? "": "(GFA/BFA)"}: {jackpot.total}
               </Typography>
             </Box>
           </Box>
@@ -111,10 +126,10 @@ export default function Card({ jackpot, card }: Props) {
       >
         <Box sx={{ '& > div': { mb: 0.5 } }}>
           {openFoil !== null &&
-            mintData[openFoil]?.mints.map((mint) => (
+            mintData[openFoil]?.mints.map((mint, idx) => (
               <Box key={mint.uid}>
                 <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>
-                  {mint.mint.split('/')[0]}
+                  {mint.mint ? mint.mint.split('/')[0] : idx + 1}
                 </Typography>
                 <Typography variant="body2" component="span">
                   {' '} — {mint.mint_player || '—'}

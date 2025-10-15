@@ -1,6 +1,6 @@
 'use client'
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import Image from 'next/image'
-import { ToggleButton, ToggleButtonGroup, Box, Typography } from '@mui/material'
 
 interface Props {
   selected: number[]
@@ -25,7 +25,7 @@ export default function RarityFilter({ selected, onToggle }: Props) {
   const handleToggle = (event: React.MouseEvent<HTMLElement>, newSelected: number[]) => {
     // Find what changed and toggle it
     const allRarities = [1, 2, 3, 4]
-    const changedRarity = allRarities.find(rarity => 
+    const changedRarity = allRarities.find(rarity =>
       selected.includes(rarity) !== newSelected.includes(rarity)
     )
     if (changedRarity) {
@@ -34,7 +34,7 @@ export default function RarityFilter({ selected, onToggle }: Props) {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center'}}>
       <ToggleButtonGroup
         value={selected}
         onChange={handleToggle}
@@ -64,9 +64,9 @@ export default function RarityFilter({ selected, onToggle }: Props) {
             value={rarity}
             aria-label={rarityNames[rarity]}
           >
-            <Image 
-              src={rarityIcons[rarity]} 
-              alt={rarityNames[rarity]} 
+            <Image
+              src={rarityIcons[rarity]}
+              alt={rarityNames[rarity]}
               width={40}
               height={40}
             />
