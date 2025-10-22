@@ -1,8 +1,8 @@
-import { CardDetail } from "@/app/ca-mint-history/types/cardDetails";
 import { Avatar, Box, Card, CardContent, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import { WEB_URL } from "../lib/tokenIcons";
 import { Skins } from "../types/skins";
+import { CardDetail } from "@/app/types/shared";
 
 export function SkinsCard({ item, cardDetails }: { item: Skins, cardDetails: CardDetail[] }) {
   const cardDetailId = item.card_detail_id;

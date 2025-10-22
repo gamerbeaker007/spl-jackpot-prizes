@@ -1,4 +1,4 @@
-import { MintHistoryResponse } from "@/app/ca-mint-history/types/mintHistory";
+import { MintHistoryResponse } from "@/app/types/shared";
 import { fetchMintHistory } from "../api/splApi";
 import logger from '../log/logger.server';
 import cacheServer from './cacheServer';

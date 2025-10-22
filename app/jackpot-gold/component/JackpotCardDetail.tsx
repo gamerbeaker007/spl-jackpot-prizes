@@ -1,8 +1,8 @@
-import { CardDetail } from "@/app/ca-mint-history/types/cardDetails";
 import { WEB_URL } from "@/app/jackpot-prizes/lib/tokenIcons";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import Image from "next/image";
 import { JackpotGoldCardDetails } from "../types/cardCollection";
+import { CardDetail } from "@/app/types/shared";
 
 export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCardDetails, cardDetails: CardDetail[] }) {
   const cardDetailId = item.id;
