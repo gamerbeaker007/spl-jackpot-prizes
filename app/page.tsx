@@ -1,6 +1,6 @@
 'use client'
 
-import { Container, Typography, Box, Button } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
@@ -12,6 +12,10 @@ export default function HomePage() {
 
   const handleNavigateToJackpotPrizes = () => {
     router.push('/jackpot-prizes')
+  }
+
+    const handleNavigateToJackpotGold = () => {
+    router.push('/jackpot-gold')
   }
 
   return (
@@ -83,7 +87,33 @@ export default function HomePage() {
             View Jackpot Prizes
           </Button>
         </Box>
-      </Box>
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: 2,
+            textAlign: 'center',
+            backgroundColor: 'background.paper'
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Jackpot GOLD Prizes
+          </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Overview of current Jackpot GOLD card prizes, including rarities and quantities within the Conclave Arcana reward set.
+            </Typography>
+          <Button
+            onClick={handleNavigateToJackpotGold}
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            View Jackpot Prizes
+          </Button>
+        </Box>
+              </Box>
+
     </Container>
   )
 }

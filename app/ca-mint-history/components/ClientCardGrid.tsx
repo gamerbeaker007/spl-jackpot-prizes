@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import { CardDetail } from '../types/cardDetails'
 import { PackJackpotCard } from '../types/packJackpot'
 import Card from './Card'
-import RarityFilter from './rarityFilter'
+import RarityFilter from '@/components/shared/RarityFilter'
 
 interface Props {
   jackpotData: PackJackpotCard[]
@@ -30,7 +30,6 @@ export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
     })
   }, [jackpotData, cardDetails, selectedRarities])
 
-  console.log('Filtered cards:', filteredCards)
   const totals = jackpotData.reduce(
     (acc, card) => {
       acc.total += card.total
@@ -39,7 +38,6 @@ export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
     },
     { total: 0, total_minted: 0 }
   )
-  console.log('Totals:', totals)
   const totalsFiltered = filteredCards.reduce(
     (acc, card) => {
       acc.total += card.total

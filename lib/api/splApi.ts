@@ -1,11 +1,12 @@
 import { CardDetail } from "@/app/ca-mint-history/types/cardDetails";
 import { MintHistoryResponse } from "@/app/ca-mint-history/types/mintHistory";
 import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
+import { SplCardDetail, SplPlayerCollection } from "@/app/jackpot-gold/types/cardCollection";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
+import { Skins } from "@/app/jackpot-prizes/types/skins";
 import axios from "axios";
 import * as rax from "retry-axios";
 import logger from "../log/logger.server";
-import { Skins } from "@/app/jackpot-prizes/types/skins";
 
 const splBaseClient = axios.create({
   baseURL: "https://api.splinterlands.com",
@@ -159,6 +160,29 @@ export async function fetchJackPotSkins(): Promise<Skins[]> {
     return data as Skins[];
   } catch (error) {
     logger.error(`Failed to fetch jackpot skins: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetch pack jackpot gold from Splinterlands API
+ */
+export async function fetchJackPotGold(): Promise<SplCardDetail[]> {
+  const url = "/cards/collection/$JACKPOT_GOLD";
+  logger.info(`Fetching pack jackpot gold for username $JACKPOT_GOLD`);
+
+  try {
+    const res = await splBaseClient.get(url);
+    const data = res.data as SplPlayerCollection;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data.cards)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    return data.cards as SplCardDetail[];
+  } catch (error) {
+    logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
