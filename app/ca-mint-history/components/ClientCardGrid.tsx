@@ -14,7 +14,6 @@ interface Props {
 
 export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([])
-  console.log('Rendering ClientCardGrid with', { jackpotData })
 
   const toggleRarity = (rarity: number) => {
     setSelectedRarities((prev) =>
@@ -46,9 +45,6 @@ export default function ClientCardGrid({ jackpotData, cardDetails }: Props) {
     },
     { total: 0, total_minted: 0 }
   )
-
-  console.log('TotalsFiltered:', totalsFiltered)
-
 
   return (
     <Container maxWidth="xl">
