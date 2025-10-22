@@ -1,4 +1,18 @@
-// types/cardDetails.ts
+// Shared types for card-related data across different pages
+
+export interface FoilStats {
+  foil: number;
+  minted: number;
+  total: number;
+}
+
+export interface CardPrizeData {
+  card_detail_id: number;
+  total_minted: number;
+  total: number;
+  foils: FoilStats[];
+}
+
 export interface CardStats {
   mana: number[];
   attack: number[];
@@ -38,4 +52,16 @@ export interface CardDetail {
   stake_type_id: number;
   game_type: string;
   distribution: CardDistribution[];
+}
+
+export interface MintHistoryItem {
+  uid: string;
+  mint: string;
+  mint_player: string;
+}
+
+export interface MintHistoryResponse {
+  total: number;
+  total_minted: number;
+  mints: MintHistoryItem[];
 }

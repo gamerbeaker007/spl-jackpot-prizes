@@ -1,9 +1,9 @@
 'use client'
 
+import ClientCardGrid from '@/components/shared/ClientCardGrid'
 import { Alert, Box, CircularProgress } from '@mui/material'
 import { useCardDetails } from '../hooks/useCardDetails'
-import ClientCardGrid from './components/ClientCardGrid'
-import { useJackPotOverview } from './hooks/useCardData'
+import { useJackPotOverview } from './hooks/useJackPotOverview'
 
 export default function CAMintHistoryPage() {
   const { jackpotData, loading, error } = useJackPotOverview({ edition: 14 })
@@ -32,5 +32,12 @@ export default function CAMintHistoryPage() {
     )
   }
 
-  return <ClientCardGrid jackpotData={jackpotData} cardDetails={cardDetails} />
+  return (
+    <ClientCardGrid
+      prizeData={jackpotData}
+      cardDetails={cardDetails}
+      title="Conclave Arcana Jackpot Prize Overview"
+      subtitle="Discover cards available in CA packs"
+    />
+  )
 }

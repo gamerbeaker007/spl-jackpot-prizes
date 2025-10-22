@@ -1,9 +1,9 @@
-import { CardDetail } from "@/app/ca-mint-history/types/cardDetails";
-import { MintHistoryResponse } from "@/app/ca-mint-history/types/mintHistory";
 import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
 import { SplCardDetail, SplPlayerCollection } from "@/app/jackpot-gold/types/cardCollection";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
+import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
+import { CardDetail, MintHistoryResponse } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
 import logger from "../log/logger.server";
@@ -183,6 +183,31 @@ export async function fetchJackPotGold(): Promise<SplCardDetail[]> {
     return data.cards as SplCardDetail[];
   } catch (error) {
     logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetch ranked draws prize overview from Splinterlands API
+ */
+export async function fetchRankedDrawsPrizeOverview(): Promise<RankedDrawsPrizeCard[]> {
+  const url = "/ranked_draws/prize_overview";
+  logger.info("Fetching ranked draws prize overview");
+
+  try {
+    const res = await splBaseClient.get(url);
+    const data = res.data;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    logger.info(`Fetched ${data.length} ranked draws prize cards`);
+
+    return data as RankedDrawsPrizeCard[];
+  } catch (error) {
+    logger.error(`Failed to fetch ranked draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }

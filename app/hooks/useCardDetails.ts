@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CardDetail } from '../ca-mint-history/types/cardDetails'
+import { CardDetail } from '../types/shared'
 
 interface UseCardDetailsReturn {
   cardDetails: CardDetail[]

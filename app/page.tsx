@@ -14,8 +14,12 @@ export default function HomePage() {
     router.push('/jackpot-prizes')
   }
 
-    const handleNavigateToJackpotGold = () => {
+  const handleNavigateToJackpotGold = () => {
     router.push('/jackpot-gold')
+  }
+
+  const handleNavigateToRankedRewardDraws = () => {
+    router.push('/ranked-reward-draws')
   }
 
   return (
@@ -31,7 +35,7 @@ export default function HomePage() {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
           gap: 4,
           mt: 4
         }}
@@ -112,7 +116,33 @@ export default function HomePage() {
             View Jackpot Prizes
           </Button>
         </Box>
-              </Box>
+
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: 2,
+            textAlign: 'center',
+            backgroundColor: 'background.paper'
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Ranked Reward Draws
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Overview of cards available in ranked reward draws with detailed mint information and foil statistics.
+          </Typography>
+          <Button
+            onClick={handleNavigateToRankedRewardDraws}
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            View Ranked Rewards
+          </Button>
+        </Box>
+      </Box>
 
     </Container>
   )

@@ -1,25 +1,25 @@
 'use client'
 
-import { ReactNode } from 'react'
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
+import { Close } from '@mui/icons-material';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton
-} from '@mui/material'
-import { Close } from '@mui/icons-material'
+} from '@mui/material';
+import { ReactNode } from 'react';
 
 interface ModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title?: string
-  children: ReactNode
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children: ReactNode;
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
-    <Dialog 
-      open={isOpen} 
+    <Dialog
+      open={isOpen}
       onClose={onClose}
       maxWidth="sm"
       fullWidth
@@ -31,9 +31,9 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       }}
     >
       {title && (
-        <DialogTitle sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
+        <DialogTitle sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
           pb: 1
         }}>
@@ -51,5 +51,5 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
         {children}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

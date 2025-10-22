@@ -46,6 +46,14 @@ export default function Navigation() {
           >
             Jackpot Gold (CA rewards)
           </Button>
+
+          <Button
+            color={pathname === '/ranked-reward-draws' ? 'secondary' : 'inherit'}
+            onClick={() => handleNavigation('/ranked-reward-draws')}
+            variant={pathname === '/ranked-reward-draws' ? 'outlined' : 'text'}
+          >
+            Ranked Reward Draws
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
