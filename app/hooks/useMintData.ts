@@ -25,12 +25,7 @@ export function useMintData() {
 
     try {
       const response = await fetch(
-        `/api/mint_history?foil=${foil}&card_detail_id=${cardId}`,
-        {
-          cache: 'force-cache',
-          next: { revalidate: 1800 } // 30 minutes
-        }
-      );
+        `/api/mint_history?foil=${foil}&card_detail_id=${cardId}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch mint data: ${response.status}`);

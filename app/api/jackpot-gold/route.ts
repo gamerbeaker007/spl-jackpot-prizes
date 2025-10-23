@@ -1,4 +1,4 @@
-import { SplCardDetail } from '@/app/jackpot-gold/types/cardCollection';
+import { SplPlayerCardDetail } from '@/app/jackpot-gold/types/cardCollection';
 import { fetchJackPotGold } from '@/lib/api/splApi';
 import logger from '@/lib/log/logger.server';
 import { NextResponse } from 'next/server';
@@ -19,7 +19,7 @@ export async function GET() {
           mint: string | null;
         }>();
 
-        cards.forEach((card: SplCardDetail) => {
+        cards.forEach((card: SplPlayerCardDetail) => {
           const key = `${card.card_detail_id}-${card.foil}`;
 
           if (cardGroups.has(key)) {

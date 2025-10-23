@@ -1,9 +1,9 @@
 import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
-import { SplCardDetail, SplPlayerCollection } from "@/app/jackpot-gold/types/cardCollection";
+import { SplPlayerCardDetail as SplPlayerCardCollection, SplPlayerCollection } from "@/app/jackpot-gold/types/cardCollection";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
-import { CardDetail, MintHistoryResponse } from "@/app/types/shared";
+import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
 import logger from "../log/logger.server";
@@ -36,7 +36,7 @@ splBaseClient.defaults.raxConfig = {
 /**
  * Fetch card details from Splinterlands API
  */
-export async function fetchCardDetails(): Promise<CardDetail[]> {
+export async function fetchCardDetails(): Promise<SplCardDetail[]> {
   const url = "/cards/get_details";
   logger.info("Fetching card details from Splinterlands API");
 
@@ -51,7 +51,15 @@ export async function fetchCardDetails(): Promise<CardDetail[]> {
 
     logger.info(`Fetched ${data.length} card details`);
 
-    return data as CardDetail[];
+    // find card with id 911
+    const cardDetail = data.find((card: SplCardDetail) => card.id === 911);
+    if (cardDetail) {
+      logger.info(`Found card detail for ID 911: ${cardDetail.name}`);
+    } else {
+      logger.warn(`Card detail not found for ID 911`);
+    }
+
+    return data as SplCardDetail[];
   } catch (error) {
     logger.error(`Failed to fetch card details: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
@@ -167,7 +175,7 @@ export async function fetchJackPotSkins(): Promise<Skins[]> {
 /**
  * Fetch pack jackpot gold from Splinterlands API
  */
-export async function fetchJackPotGold(): Promise<SplCardDetail[]> {
+export async function fetchJackPotGold(): Promise<SplPlayerCardCollection[]> {
   const url = "/cards/collection/$JACKPOT_GOLD";
   logger.info(`Fetching pack jackpot gold for username $JACKPOT_GOLD`);
 
@@ -180,7 +188,7 @@ export async function fetchJackPotGold(): Promise<SplCardDetail[]> {
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    return data.cards as SplCardDetail[];
+    return data.cards as SplPlayerCardCollection[];
   } catch (error) {
     logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;

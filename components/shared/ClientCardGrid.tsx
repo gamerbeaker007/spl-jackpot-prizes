@@ -1,6 +1,6 @@
 'use client'
 
-import { CardDetail, CardPrizeData } from '@/app/types/shared';
+import { CardPrizeData, SplCardDetail } from '@/app/types/shared';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import Card from './Card';
@@ -8,7 +8,7 @@ import RarityFilter from './RarityFilter';
 
 interface Props {
   prizeData: CardPrizeData[];
-  cardDetails: CardDetail[];
+  cardDetails: SplCardDetail[];
   title: string;
   subtitle?: string;
 }

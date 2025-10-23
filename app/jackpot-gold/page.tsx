@@ -71,6 +71,7 @@ export default function JackpotPrizesPage() {
       </Box>
 
       {/* Cards Grid */}
+      {cardDetails && filteredCards && (
       <Box
         sx={{
           display: 'grid',
@@ -88,7 +89,7 @@ export default function JackpotPrizesPage() {
           <JackpotCardDetail key={`jackpot-${item.id}-${item.foil}`} item={item} cardDetails={cardDetails} />
         ))}
       </Box>
-
+      )}
       {filteredCards.length === 0 && (
         <Box textAlign="center" mb={6}>
           <Typography variant="h6" color="text.secondary">
@@ -96,6 +97,7 @@ export default function JackpotPrizesPage() {
           </Typography>
         </Box>
       )}
+    )
 
       {/* Divider */}
       <Divider sx={{ my: 4 }} />

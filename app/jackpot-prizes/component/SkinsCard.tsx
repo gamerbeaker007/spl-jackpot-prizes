@@ -1,24 +1,34 @@
+import { SplCardDetail } from "@/app/types/shared";
 import { Avatar, Box, Card, CardContent, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
-import { WEB_URL } from "../lib/tokenIcons";
-import { Skins } from "../types/skins";
-import { CardDetail } from "@/app/types/shared";
 
-export function SkinsCard({ item, cardDetails }: { item: Skins, cardDetails: CardDetail[] }) {
+import { getSkinImageUrl } from "@/lib/utils/imageUtils";
+import { Skins } from "../types/skins";
+
+export function SkinsCard({ item, cardDetails }: { item: Skins, cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.card_detail_id;
 
 const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
 const cardName = cardDetail?.name || '';
 
-// Use custom image URLs for specific card names
-let imageUrl = `${WEB_URL}cards_v2.2/${item.skin}/${encodeURIComponent(cardName)}.jpg`;
-if (cardName === "Venari Marksrat") {
-  imageUrl = `${WEB_URL}cards_soulbound/Spooky/Venari%20Marksrat.jpg`;
-} else if (cardName === "Kelya Frendul") {
-  imageUrl = `${WEB_URL}cards_chaos/Spooky/Kelya%20Frendul.jpg`;
-} else if (cardName === "Uraeus") {
-  imageUrl = `${WEB_URL}cards_chaos/Spooky/Uraeus.jpg`;
+// Early return if card detail is not found
+if (!cardDetail || !cardName.trim()) {
+  console.warn(`Card detail not found for skin ID: ${cardDetailId}`);
+  return (
+    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+        <Typography variant="h6" color="error" textAlign="center">
+          Card data not found (ID: {cardDetailId})
+        </Typography>
+      </CardContent>
+    </Card>
+  );
 }
+
+const cleanCardName = cardName.trim();
+
+// Use the utility function for safe image URL generation
+const imageUrl = getSkinImageUrl(cleanCardName, item.skin);
 
 return (
     <Card
@@ -58,7 +68,7 @@ return (
         </Tooltip>
 
         <Typography variant="h6" fontWeight="bold" gutterBottom textAlign="center">
-          {`${item.skin} - ${cardName}`}
+          {`${item.skin} - ${cleanCardName}`}
         </Typography>
 
         <Box sx={{ mt: 'auto', pt: 2 }}>

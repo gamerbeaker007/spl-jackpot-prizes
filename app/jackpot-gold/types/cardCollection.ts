@@ -1,10 +1,11 @@
-export interface SplCardDetail {
+export interface SplPlayerCardDetail {
     card_detail_id: number;
     player: string;
     uid: string;
     xp: number;
     gold: boolean;
     edition: number;
+    rarity: number;
     card_set: string;
     collection_power: number;
     bcx: number;
@@ -16,7 +17,7 @@ export interface SplCardDetail {
 
 export interface SplPlayerCollection {
     player: string;
-    cards: SplCardDetail[];
+    cards: SplPlayerCardDetail[];
   };
 
 export interface JackpotGoldCardDetails {

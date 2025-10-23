@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CardDetail } from '../types/shared'
+import { SplCardDetail } from '../types/shared'
 
 interface UseCardDetailsReturn {
-  cardDetails: CardDetail[]
+  cardDetails: SplCardDetail[]
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
@@ -14,7 +14,7 @@ interface UseCardDetailsOptions {
 
 export function useCardDetails(options: UseCardDetailsOptions = {}): UseCardDetailsReturn {
   const { autoFetch = true } = options
-  const [cardDetails, setCardDetails] = useState<CardDetail[]>([])
+  const [cardDetails, setCardDetails] = useState<SplCardDetail[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -23,9 +23,7 @@ export function useCardDetails(options: UseCardDetailsOptions = {}): UseCardDeta
     setError(null)
 
     try {
-      const cardResponse = await fetch('/api/card-details', {
-          cache: 'force-cache',
-        })
+      const cardResponse = await fetch('/api/card-details')
 
       if (!cardResponse.ok) {
         throw new Error(`Failed to fetch card data: ${cardResponse.status}`)

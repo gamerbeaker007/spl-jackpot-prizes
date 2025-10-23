@@ -36,7 +36,7 @@ export interface CardDistribution {
   total_burned_xp: string;
 }
 
-export interface CardDetail {
+export interface SplCardDetail {
   id: number;
   name: string;
   color: string;

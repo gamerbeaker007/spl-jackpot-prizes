@@ -1,7 +1,8 @@
 'use client'
 
 import { useMintData } from '@/app/hooks/useMintData';
-import { CardDetail, CardPrizeData, MintHistoryItem } from '@/app/types/shared';
+import { CardPrizeData, MintHistoryItem, SplCardDetail } from '@/app/types/shared';
+import { getCardImageUrl, getFoilLabel } from '@/lib/utils/imageUtils';
 import { Info } from '@mui/icons-material';
 import {
   Box,
@@ -16,18 +17,11 @@ import Modal from './Modal';
 
 interface Props {
   prizeData: CardPrizeData;
-  card: CardDetail;
+  card: SplCardDetail;
 }
 
 const DEFAULT_FOIL_TYPES = [3, 2, 4];
 const ALL_FOIL_TYPES = [0, 1, 2, 3, 4];
-const FOIL_LABELS: Record<number, string> = {
-  0: 'Regular',
-  1: 'Gold',
-  2: 'Gold Foil Arcane',
-  3: 'Black Foil',
-  4: 'Black Foil Arcane'
-};
 
 export default function Card({ prizeData, card }: Props) {
   const [openFoil, setOpenFoil] = useState<number | null>(null);
@@ -48,10 +42,7 @@ export default function Card({ prizeData, card }: Props) {
     });
   }, [card.id, fetchMintData, foilTypes, mintData]);
 
-  const imageUrl = `https://d36mxiodymuqjm.cloudfront.net/cards_v2.2/${encodeURIComponent(card.name)}.jpg`;
-
-  const foilLabel = (foil: number): string =>
-    FOIL_LABELS[foil] ?? `Foil ${foil}`;
+  const imageUrl = getCardImageUrl(card.name || 'Unknown');
 
   return (
     <>
@@ -79,7 +70,7 @@ export default function Card({ prizeData, card }: Props) {
                   return (
                     <Box key={foil} sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="body2">
-                        <strong>{foilLabel(foil)}:</strong>{' '}
+                        <strong>{getFoilLabel(foil)}:</strong>{' '}
                         {!data
                           ? 'Loading.....'
                           : foil === 3
@@ -118,7 +109,7 @@ export default function Card({ prizeData, card }: Props) {
       <Modal
         isOpen={openFoil !== null && !!mintData[openFoil]}
         onClose={() => setOpenFoil(null)}
-        title={openFoil !== null ? `${card.name} - ${foilLabel(openFoil)} Mints` : undefined}
+        title={openFoil !== null ? `${card.name} - ${getFoilLabel(openFoil)} Mints` : undefined}
       >
         <Box sx={{ '& > div': { mb: 0.5 } }}>
           {openFoil !== null &&
