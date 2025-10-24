@@ -49,16 +49,6 @@ export async function fetchCardDetails(): Promise<SplCardDetail[]> {
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} card details`);
-
-    // find card with id 911
-    const cardDetail = data.find((card: SplCardDetail) => card.id === 911);
-    if (cardDetail) {
-      logger.info(`Found card detail for ID 911: ${cardDetail.name}`);
-    } else {
-      logger.warn(`Card detail not found for ID 911`);
-    }
-
     return data as SplCardDetail[];
   } catch (error) {
     logger.error(`Failed to fetch card details: ${error instanceof Error ? error.message : 'Unknown error'}`);

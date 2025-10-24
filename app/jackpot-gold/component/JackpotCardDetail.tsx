@@ -8,10 +8,8 @@ import { JackpotGoldCardDetails } from "../types/cardCollection";
 export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCardDetails, cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.id;
 
-  console.log("Looking for card detail with ID:", cardDetailId);
-  console.log("Card details available:", cardDetails);
   const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
-  console.log("Found card detail:", cardDetail);
+
   const cardName = cardDetail?.name || '';
 
   // Early return if card detail is not found

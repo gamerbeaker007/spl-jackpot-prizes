@@ -28,6 +28,8 @@ export default function Card({ prizeData, card }: Props) {
   const { mintData, fetchMintData } = useMintData();
 
   const isArchmageYabanius = card.name === "Archmage Yabanius";
+  const isConclaveArcanaRewardEdition = card.editions === "18";
+
   const foilTypes = useMemo(() =>
     isArchmageYabanius ? ALL_FOIL_TYPES : DEFAULT_FOIL_TYPES,
     [isArchmageYabanius]
@@ -74,7 +76,7 @@ export default function Card({ prizeData, card }: Props) {
                         {!data
                           ? 'Loading.....'
                           : foil === 3
-                          ? isArchmageYabanius
+                          ? isArchmageYabanius || isConclaveArcanaRewardEdition
                           ? `${data?.total_minted || 0} / ${data?.total || 0}`
                           : `${data?.total || 0}`
                           : `${data?.total_minted || 0} / ${data?.total || 0}`}
