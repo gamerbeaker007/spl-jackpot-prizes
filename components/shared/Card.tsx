@@ -1,18 +1,21 @@
 'use client'
 
+import { useCardHistory } from '@/app/hooks/useCardHistory';
 import { useMintData } from '@/app/hooks/useMintData';
 import { CardPrizeData, MintHistoryItem, SplCardDetail } from '@/app/types/shared';
 import { getCardImageUrl, getFoilLabel } from '@/lib/utils/imageUtils';
-import { Info } from '@mui/icons-material';
+import { History, Info } from '@mui/icons-material';
 import {
   Box,
   CardContent,
   IconButton,
   Card as MuiCard,
+  Tooltip,
   Typography
 } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
+import CardHistoryTooltip from './CardHistoryTooltip';
 import Modal from './Modal';
 
 interface Props {
@@ -26,6 +29,7 @@ const ALL_FOIL_TYPES = [0, 1, 2, 3, 4];
 export default function Card({ prizeData, card }: Props) {
   const [openFoil, setOpenFoil] = useState<number | null>(null);
   const { mintData, fetchMintData } = useMintData();
+  const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
 
   const isArchmageYabanius = card.name === "Archmage Yabanius";
   const isConclaveArcanaRewardEdition = card.editions === "18";
@@ -61,9 +65,12 @@ export default function Card({ prizeData, card }: Props) {
               />
             </Box>
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="h6" component="h2" gutterBottom>
-                {card.name}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  {card.name}
+                </Typography>
+
+              </Box>
 
               <Box sx={{ mt: 2, mb: 2 }}>
                 {foilTypes.map((foil) => {
@@ -115,7 +122,9 @@ export default function Card({ prizeData, card }: Props) {
       >
         <Box sx={{ '& > div': { mb: 0.5 } }}>
           {openFoil !== null &&
-            mintData[openFoil]?.mints.map((mint: MintHistoryItem, idx: number) => (
+            mintData[openFoil]?.mints.map((mint: MintHistoryItem, idx: number) => {
+              console.log('Rendering mint:', mint);
+              return (
               <Box key={mint.uid}>
                 <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>
                   {mint.mint ? mint.mint.split('/')[0] : idx + 1}
@@ -123,8 +132,43 @@ export default function Card({ prizeData, card }: Props) {
                 <Typography variant="body2" component="span">
                   {' '} — {mint.mint_player || '—'}
                 </Typography>
+                {/* Card History Button */}
+                { mint.mint_player &&(<Tooltip
+                  title={
+                    <CardHistoryTooltip
+                      cardHistory={cardHistory || []}
+                      loading={historyLoading}
+                      error={historyError}
+                    />
+                  }
+                  placement="top"
+                  onOpen={() => {
+                    // Fetch card history when tooltip opens, using the first available mint UID
+
+                    if (mint.uid) {
+                      fetchCardHistory("C7-378-G32ZII2HWG"); // TODO fix this hardcoded value
+                    }
+                  }}
+                  PopperProps={{
+                    sx: {
+                      '& .MuiTooltip-tooltip': {
+                        bgcolor: 'background.paper',
+                        color: 'text.primary',
+                        border: 1,
+                        borderColor: 'divider',
+                        maxWidth: 'none'
+                      }
+                    }
+                  }}
+                >
+                  <IconButton size="small" sx={{ p: 0.5 }}>
+                    <History fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                )}
+
               </Box>
-            ))}
+            )})}
         </Box>
       </Modal>
     </>
