@@ -11,11 +11,11 @@ import {
 } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useCardDetails } from '../hooks/useCardDetails'
-import { JackpotCardDetail } from './component/JackpotCardDetail'
-import { useJackpotGold } from './hooks/useJackpotGold'
+import { CAGoldRewardCardDetail } from './component/CAGoldRerwardCardDetail'
+import { useCAGoldRewards } from './hooks/useCAGoldRewards'
 
 export default function JackpotPrizesPage() {
-  const { jackpotGold, loading, error } = useJackpotGold({ autoFetch: true })
+  const { caGoldRewards, loading, error } = useCAGoldRewards({ autoFetch: true })
   const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
   const [selectedRarities, setSelectedRarities] = useState<number[]>([])
 
@@ -26,12 +26,12 @@ export default function JackpotPrizesPage() {
   }
 
   const filteredCards = useMemo(() => {
-    if (selectedRarities.length === 0) return jackpotGold
-    return jackpotGold.filter((jackpot) => {
-      const card = cardDetails.find((c) => c.id === jackpot.id)
+    if (selectedRarities.length === 0) return caGoldRewards
+    return caGoldRewards.filter((rewardCard) => {
+      const card = cardDetails.find((c) => c.id === rewardCard.card_detail_id)
       return card && selectedRarities.includes(card.rarity)
     })
-  }, [jackpotGold, cardDetails, selectedRarities])
+  }, [caGoldRewards, cardDetails, selectedRarities])
 
   if (loading || loadingCardDetails) {
     return (
@@ -86,7 +86,7 @@ export default function JackpotPrizesPage() {
         }}
       >
         {filteredCards.map((item) => (
-          <JackpotCardDetail key={`jackpot-${item.id}-${item.foil}`} item={item} cardDetails={cardDetails} />
+          <CAGoldRewardCardDetail key={item.card_detail_id} item={item} cardDetails={cardDetails} />
         ))}
       </Box>
       )}
@@ -97,7 +97,6 @@ export default function JackpotPrizesPage() {
           </Typography>
         </Box>
       )}
-    )
 
       {/* Divider */}
       <Divider sx={{ my: 4 }} />

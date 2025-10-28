@@ -1,5 +1,5 @@
+import { SplCAGoldReward } from "@/app/ca-gold-rewards/types/cardCollection";
 import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
-import { SplPlayerCardDetail as SplPlayerCardCollection, SplPlayerCollection } from "@/app/jackpot-gold/types/cardCollection";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
@@ -165,20 +165,20 @@ export async function fetchJackPotSkins(): Promise<Skins[]> {
 /**
  * Fetch pack jackpot gold from Splinterlands API
  */
-export async function fetchJackPotGold(): Promise<SplPlayerCardCollection[]> {
-  const url = "/cards/collection/$JACKPOT_GOLD";
+export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
+  const url = "/cards/ca_gold_rewards";
   logger.info(`Fetching pack jackpot gold for username $JACKPOT_GOLD`);
 
   try {
     const res = await splBaseClient.get(url);
-    const data = res.data as SplPlayerCollection;
+    const data = res.data;
 
     // Handle API-level error even if HTTP status is 200
-    if (!data || !Array.isArray(data.cards)) {
+    if (!data || !Array.isArray(data)) {
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    return data.cards as SplPlayerCardCollection[];
+    return data as SplCAGoldReward[];
   } catch (error) {
     logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;

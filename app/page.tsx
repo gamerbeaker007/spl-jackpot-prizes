@@ -14,8 +14,8 @@ export default function HomePage() {
     router.push('/jackpot-prizes')
   }
 
-  const handleNavigateToJackpotGold = () => {
-    router.push('/jackpot-gold')
+  const handleNavigateToCaGoldRewards = () => {
+    router.push('/ca-gold-rewards')
   }
 
   const handleNavigateToRankedRewardDraws = () => {
@@ -102,13 +102,13 @@ export default function HomePage() {
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Jackpot GOLD Prizes
+            CA GOLD Reward Prizes
           </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Overview of current Jackpot GOLD card prizes, including rarities and quantities within the Conclave Arcana reward set.
+            Overview of current CA GOLD Reward card prizes, including rarities and quantities within the Conclave Arcana reward set.
             </Typography>
           <Button
-            onClick={handleNavigateToJackpotGold}
+            onClick={handleNavigateToCaGoldRewards}
             variant="contained"
             size="large"
             fullWidth

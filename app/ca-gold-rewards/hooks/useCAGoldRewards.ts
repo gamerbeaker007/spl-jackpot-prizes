@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useState } from 'react'
-import { JackpotGoldCardDetails } from '../types/cardCollection'
+import { SplCAGoldReward } from '../types/cardCollection'
 
-interface UseJackpotGoldReturn {
-  jackpotGold: JackpotGoldCardDetails[]
+interface UseCAGoldRewardReturn {
+  caGoldRewards: SplCAGoldReward[]
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
 }
 
-interface UseJackpotGoldOptions {
+interface UseCAGoldRewardsOptions {
   autoFetch?: boolean
 }
 
-export function useJackpotGold(options: UseJackpotGoldOptions = {}): UseJackpotGoldReturn {
+export function useCAGoldRewards(options: UseCAGoldRewardsOptions = {}): UseCAGoldRewardReturn {
   const { autoFetch = true } = options
 
-  const [jackpotGold, setJackpotGold] = useState<JackpotGoldCardDetails[]>([])
+  const [caGoldRewards, setCaGoldRewards] = useState<SplCAGoldReward[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,12 +24,12 @@ export function useJackpotGold(options: UseJackpotGoldOptions = {}): UseJackpotG
     setError(null)
 
     try {
-      const response = await fetch('/api/jackpot-gold')
+      const response = await fetch('/api/ca-gold-rewards')
       if (!response.ok) {
         throw new Error(`Failed to fetch jackpot data: ${response.status}`)
       }
-      const data: JackpotGoldCardDetails[] = await response.json()
-      setJackpotGold(data)
+      const data: SplCAGoldReward[] = await response.json()
+      setCaGoldRewards(data)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch jackpot data'
       setError(errorMessage)
@@ -46,7 +46,7 @@ export function useJackpotGold(options: UseJackpotGoldOptions = {}): UseJackpotG
   }, [fetchData, autoFetch])
 
   return {
-    jackpotGold,
+    caGoldRewards,
     loading,
     error,
     refetch: fetchData

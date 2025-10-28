@@ -3,10 +3,10 @@ import { SplCardDetail } from "@/app/types/shared";
 import { getCardImageUrl, getFallbackImageUrl } from "@/lib/utils/imageUtils";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import Image from "next/image";
-import { JackpotGoldCardDetails } from "../types/cardCollection";
+import { SplCAGoldReward } from "../types/cardCollection";
 
-export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCardDetails, cardDetails: SplCardDetail[] }) {
-  const cardDetailId = item.id;
+export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldReward, cardDetails: SplCardDetail[] }) {
+  const cardDetailId = item.card_detail_id;
 
   const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
 
@@ -27,7 +27,7 @@ export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCard
   }
 
   // Use the utility function for safe image URL generation
-  const imageUrl = getCardImageUrl(cardDetail.name, item.foil);
+  const imageUrl = getCardImageUrl(cardDetail.name, 1); // always 1 gold in this case
   const fallbackUrl = getFallbackImageUrl(cardDetail.name);
 
   return (
@@ -42,7 +42,7 @@ export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCard
         <Box sx={{ p: 1 }}>
           <Image
             src={imageUrl}
-            alt={`${cardDetail.name} - Foil ${item.foil}`}
+            alt={cardDetail.name}
             width={260}
             height={360}
             onError={(e) => {
@@ -61,10 +61,10 @@ export function JackpotCardDetail({ item, cardDetails }: { item: JackpotGoldCard
           <Typography
         variant="h5"
         fontWeight="bold"
-        color={item.qty > 0 ? 'success.main' : 'text.secondary'}
+        color={Number(item.count) > 0 ? 'success.main' : 'text.secondary'}
         textAlign="center"
           >
-        {item.qty.toLocaleString()}
+        {item.count.toLocaleString()}
           </Typography>
         </Box>
       </CardContent>
