@@ -40,11 +40,11 @@ export default function Navigation() {
             Jackpot Prizes
           </Button>
           <Button
-            color={pathname === '/jackpot-gold' ? 'secondary' : 'inherit'}
-            onClick={() => handleNavigation('/jackpot-gold')}
-            variant={pathname === '/jackpot-gold' ? 'outlined' : 'text'}
+            color={pathname === '/ca-gold-rewards' ? 'secondary' : 'inherit'}
+            onClick={() => handleNavigation('/ca-gold-rewards')}
+            variant={pathname === '/ca-gold-rewards' ? 'outlined' : 'text'}
           >
-            Jackpot Gold (CA rewards)
+            CA GOLD Reward Prizes
           </Button>
 
           <Button
