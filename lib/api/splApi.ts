@@ -3,6 +3,7 @@ import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
+import { CardHistoryResponse } from "@/app/types/cardHistory";
 import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
@@ -206,6 +207,37 @@ export async function fetchRankedDrawsPrizeOverview(): Promise<RankedDrawsPrizeC
     return data as RankedDrawsPrizeCard[];
   } catch (error) {
     logger.error(`Failed to fetch ranked draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetches card history for a specific card ID
+ * @param cardId - The card ID (e.g., "C7-378-G32ZII2HWG")
+ * @returns Array of card history items
+ */
+export async function fetchCardHistory(cardId: string): Promise<CardHistoryResponse> {
+  try {
+    logger.info(`Fetching card history for card ID: ${cardId}`);
+
+    const response = await splBaseClient.get('/cards/history', {
+      params: {
+        id: cardId
+      }
+    });
+
+    const { data } = response;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    logger.info(`Fetched ${data.length} card history entries for card ${cardId}`);
+
+    return data as CardHistoryResponse;
+  } catch (error) {
+    logger.error(`Failed to fetch card history for ${cardId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
