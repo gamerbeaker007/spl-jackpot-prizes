@@ -146,7 +146,7 @@ export default function Card({ prizeData, card }: Props) {
                     // Fetch card history when tooltip opens, using the first available mint UID
 
                     if (mint.uid) {
-                      fetchCardHistory("C7-378-G32ZII2HWG"); // TODO fix this hardcoded value
+                      fetchCardHistory(mint.uid);
                     }
                   }}
                   PopperProps={{
