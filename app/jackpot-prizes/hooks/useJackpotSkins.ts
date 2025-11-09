@@ -24,7 +24,10 @@ export function useJackpotSkins(options: UseJackpotSkinsOptions = {}): UseJackpo
     setError(null)
 
     try {
-      const response = await fetch('/api/jackpot-skins')
+      const response = await fetch('/api/jackpot-skins', {
+        cache: 'force-cache',
+        next: { revalidate: 300 } // 5 minutes cache
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch jackpot data: ${response.status}`)
       }

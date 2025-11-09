@@ -1,43 +1,33 @@
-'use client'
-
 import ClientCardGrid from '@/components/shared/ClientCardGrid';
-import { Alert, Box, CircularProgress } from '@mui/material';
-import { useCardDetails } from '../hooks/useCardDetails';
-import { useRankedDrawsOverview } from './hooks/useRankedDrawsData';
+import { fetchCardDetails, fetchRankedDrawsPrizeOverview } from '@/lib/api/splApi';
+import { Alert, Box } from '@mui/material';
 
-export default function RankedRewardDrawsPage() {
-  const { rankedDrawsData, loading, error } = useRankedDrawsOverview({ autoFetch: true });
-  const { cardDetails, loading: loadingCardDetails } = useCardDetails({ autoFetch: true });
+export const revalidate = 300; // Revalidate every 5 minutes
 
-  if (loading || loadingCardDetails) {
+export default async function RankedRewardDrawsPage() {
+  try {
+    // Fetch data in parallel on the server
+    const [rankedDrawsData, cardDetails] = await Promise.all([
+      fetchRankedDrawsPrizeOverview(),
+      fetchCardDetails()
+    ]);
+
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="60vh"
-      >
-        <CircularProgress />
-      </Box>
+      <ClientCardGrid
+        prizeData={rankedDrawsData}
+        cardDetails={cardDetails}
+        title="Ranked Reward Draws Prize Overview"
+        subtitle="Discover cards available in ranked reward draws"
+      />
     );
-  }
-
-  if (error) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return (
       <Box p={3}>
         <Alert severity="error">
-          Failed to load ranked draws data: {error}
+          Failed to load ranked draws data: {errorMessage}
         </Alert>
       </Box>
     );
   }
-
-  return (
-    <ClientCardGrid
-      prizeData={rankedDrawsData}
-      cardDetails={cardDetails}
-      title="Ranked Reward Draws Prize Overview"
-      subtitle="Discover cards available in ranked reward draws"
-    />
-  );
 }

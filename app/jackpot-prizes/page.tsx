@@ -1,50 +1,25 @@
-'use client'
-
+import { fetchCardDetails, fetchJackPotPrizes, fetchJackPotSkins } from '@/lib/api/splApi';
 import {
   Alert,
   Box,
-  CircularProgress,
   Container,
   Divider,
   Typography
-} from '@mui/material'
-import { useCardDetails } from '../hooks/useCardDetails'
-import { BalanceCard } from './component/BalanceCard'
-import { SkinsCard } from './component/SkinsCard'
-import { useJackpotPrizes } from './hooks/useJackpotPrizes'
-import { useJackpotSkins } from './hooks/useJackpotSkins'
+} from '@mui/material';
+import { BalanceCard } from './component/BalanceCard';
+import { SkinsCard } from './component/SkinsCard';
 
-// Helper component to render a single balance card
+export const revalidate = 300; // Revalidate every 5 minutes
 
-export default function JackpotPrizesPage() {
-  const { jackpotPrizes, loading, error } = useJackpotPrizes({ autoFetch: true })
-  const { jackpotSkins, loading: loadingSkins, error: errorSkins } = useJackpotSkins({ autoFetch: true })
-  const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
+export default async function JackpotPrizesPage() {
+  try {
+    // Fetch all data in parallel on the server
+    const [jackpotPrizes, jackpotSkins, cardDetails] = await Promise.all([
+      fetchJackPotPrizes(),
+      fetchJackPotSkins(),
+      fetchCardDetails()
+    ]);
 
-  if (loading || loadingSkins || loadingCardDetails) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="60vh"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    )
-  }
-
-  if (error || errorSkins || errorCardDetails) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">
-          Failed to load jackpot data: {error || errorSkins || errorCardDetails}
-        </Alert>
-      </Container>
-    )
-  }
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
@@ -112,5 +87,15 @@ export default function JackpotPrizesPage() {
         </Box>
       )}
     </Container>
-  )
+    );
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Alert severity="error">
+          Failed to load jackpot data: {errorMessage}
+        </Alert>
+      </Container>
+    );
+  }
 }

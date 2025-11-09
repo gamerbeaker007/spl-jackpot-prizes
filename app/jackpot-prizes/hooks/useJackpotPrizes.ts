@@ -24,7 +24,10 @@ export function useJackpotPrizes(options: UseJackpotPrizesOptions = {}): UseJack
     setError(null)
 
     try {
-      const response = await fetch('/api/jackpot-balances')
+      const response = await fetch('/api/jackpot-balances', {
+        cache: 'force-cache',
+        next: { revalidate: 300 } // 5 minutes cache
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch jackpot data: ${response.status}`)
       }

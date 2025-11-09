@@ -19,7 +19,12 @@ export async function GET(request: NextRequest) {
 
     const cardHistory = await fetchCardHistory(cardId)
 
-    return NextResponse.json(cardHistory)
+    return NextResponse.json(cardHistory, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200', // 10 minutes cache, 20 minutes stale
+      },
+    })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     logger.error(`Card history API error: ${errorMessage}`)

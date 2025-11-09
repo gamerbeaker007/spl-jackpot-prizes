@@ -7,7 +7,7 @@ import {
   DialogTitle,
   IconButton
 } from '@mui/material';
-import { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     <Dialog
       open={isOpen}
@@ -53,3 +53,5 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     </Dialog>
   );
 }
+
+export default memo(Modal);

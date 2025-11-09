@@ -23,12 +23,14 @@ export function useCardDetails(options: UseCardDetailsOptions = {}): UseCardDeta
     setError(null)
 
     try {
-      const cardResponse = await fetch('/api/card-details')
+      const cardResponse = await fetch('/api/card-details', {
+        cache: 'force-cache',
+        next: { revalidate: 3600 } // 1 hour cache
+      })
 
       if (!cardResponse.ok) {
         throw new Error(`Failed to fetch card data: ${cardResponse.status}`)
       }
-
 
       const cardResult = await cardResponse.json()
 

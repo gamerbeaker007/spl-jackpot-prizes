@@ -1,6 +1,7 @@
 'use client'
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
-import Image from 'next/image'
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import Image from 'next/image';
+import { memo } from 'react';
 
 interface Props {
   selected: number[]
@@ -21,7 +22,7 @@ const rarityNames: Record<number, string> = {
   4: 'Legendary',
 }
 
-export default function RarityFilter({ selected, onToggle }: Props) {
+function RarityFilter({ selected, onToggle }: Props) {
   const handleToggle = (event: React.MouseEvent<HTMLElement>, newSelected: number[]) => {
     // Find what changed and toggle it
     const allRarities = [1, 2, 3, 4]
@@ -77,5 +78,7 @@ export default function RarityFilter({ selected, onToggle }: Props) {
         ))}
       </ToggleButtonGroup>
     </Box>
-  )
+  );
 }
+
+export default memo(RarityFilter);

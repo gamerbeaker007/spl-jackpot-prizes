@@ -2,7 +2,7 @@
 
 import { CardPrizeData, SplCardDetail } from '@/app/types/shared';
 import { Box, Container, Stack, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Card from './Card';
 import RarityFilter from './RarityFilter';
 
@@ -16,11 +16,11 @@ interface Props {
 export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
-  const toggleRarity = (rarity: number) => {
+  const toggleRarity = useCallback((rarity: number) => {
     setSelectedRarities((prev) =>
       prev.includes(rarity) ? prev.filter((r) => r !== rarity) : [...prev, rarity]
     );
-  };
+  }, []);
 
   const filteredCards = useMemo(() => {
     if (selectedRarities.length === 0) return prizeData;
@@ -30,22 +30,28 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
     });
   }, [prizeData, cardDetails, selectedRarities]);
 
-  const totals = prizeData.reduce(
-    (acc, card) => {
-      acc.total += card.total;
-      acc.total_minted += card.total_minted;
-      return acc;
-    },
-    { total: 0, total_minted: 0 }
+  const totals = useMemo(() =>
+    prizeData.reduce(
+      (acc, card) => {
+        acc.total += card.total;
+        acc.total_minted += card.total_minted;
+        return acc;
+      },
+      { total: 0, total_minted: 0 }
+    ),
+    [prizeData]
   );
 
-  const totalsFiltered = filteredCards.reduce(
-    (acc, card) => {
-      acc.total += card.total;
-      acc.total_minted += card.total_minted;
-      return acc;
-    },
-    { total: 0, total_minted: 0 }
+  const totalsFiltered = useMemo(() =>
+    filteredCards.reduce(
+      (acc, card) => {
+        acc.total += card.total;
+        acc.total_minted += card.total_minted;
+        return acc;
+      },
+      { total: 0, total_minted: 0 }
+    ),
+    [filteredCards]
   );
 
   return (

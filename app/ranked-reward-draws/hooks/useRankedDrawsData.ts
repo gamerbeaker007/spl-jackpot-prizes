@@ -22,7 +22,10 @@ export function useRankedDrawsOverview({ autoFetch = false }: UseRankedDrawsOver
     setError(null);
 
     try {
-      const response = await fetch('/api/ranked-draws-overview');
+      const response = await fetch('/api/ranked-draws-overview', {
+        cache: 'force-cache',
+        next: { revalidate: 300 } // 5 minutes cache
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch ranked draws data: ${response.status}`);

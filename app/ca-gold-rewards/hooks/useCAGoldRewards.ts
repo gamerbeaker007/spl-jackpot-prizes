@@ -24,7 +24,10 @@ export function useCAGoldRewards(options: UseCAGoldRewardsOptions = {}): UseCAGo
     setError(null)
 
     try {
-      const response = await fetch('/api/ca-gold-rewards')
+      const response = await fetch('/api/ca-gold-rewards', {
+        cache: 'force-cache',
+        next: { revalidate: 300 } // 5 minutes cache
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch jackpot data: ${response.status}`)
       }

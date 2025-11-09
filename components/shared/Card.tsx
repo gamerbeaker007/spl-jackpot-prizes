@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import CardHistoryTooltip from './CardHistoryTooltip';
 import Modal from './Modal';
 
@@ -26,7 +26,7 @@ interface Props {
 const DEFAULT_FOIL_TYPES = [3, 2, 4];
 const ALL_FOIL_TYPES = [0, 1, 2, 3, 4];
 
-export default function Card({ prizeData, card }: Props) {
+function Card({ prizeData, card }: Props) {
   const [openFoil, setOpenFoil] = useState<number | null>(null);
   const { mintData, fetchMintData } = useMintData();
   const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
@@ -125,52 +125,54 @@ export default function Card({ prizeData, card }: Props) {
             mintData[openFoil]?.mints.map((mint: MintHistoryItem, idx: number) => {
               console.log('Rendering mint:', mint);
               return (
-              <Box key={mint.uid}>
-                <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>
-                  {mint.mint ? mint.mint.split('/')[0] : idx + 1}
-                </Typography>
-                <Typography variant="body2" component="span">
-                  {' '} — {mint.mint_player || '—'}
-                </Typography>
-                {/* Card History Button */}
-                { mint.mint_player &&(<Tooltip
-                  title={
-                    <CardHistoryTooltip
-                      cardHistory={cardHistory || []}
-                      loading={historyLoading}
-                      error={historyError}
-                    />
-                  }
-                  placement="top"
-                  onOpen={() => {
-                    // Fetch card history when tooltip opens, using the first available mint UID
-
-                    if (mint.uid) {
-                      fetchCardHistory(mint.uid);
-                    }
-                  }}
-                  PopperProps={{
-                    sx: {
-                      '& .MuiTooltip-tooltip': {
-                        bgcolor: 'background.paper',
-                        color: 'text.primary',
-                        border: 1,
-                        borderColor: 'divider',
-                        maxWidth: 'none'
+                <Box key={mint.uid}>
+                  <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>
+                    {mint.mint ? mint.mint.split('/')[0] : idx + 1}
+                  </Typography>
+                  <Typography variant="body2" component="span">
+                    {' '} — {mint.mint_player || '—'}
+                  </Typography>
+                  {/* Card History Button */}
+                  {mint.mint_player && (
+                    <Tooltip
+                      title={
+                        <CardHistoryTooltip
+                          cardHistory={cardHistory || []}
+                          loading={historyLoading}
+                          error={historyError}
+                        />
                       }
-                    }
-                  }}
-                >
-                  <IconButton size="small" sx={{ p: 0.5 }}>
-                    <History fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                )}
-
-              </Box>
-            )})}
+                      placement="top"
+                      onOpen={() => {
+                        // Fetch card history when tooltip opens, using the first available mint UID
+                        if (mint.uid) {
+                          fetchCardHistory(mint.uid);
+                        }
+                      }}
+                      PopperProps={{
+                        sx: {
+                          '& .MuiTooltip-tooltip': {
+                            bgcolor: 'background.paper',
+                            color: 'text.primary',
+                            border: 1,
+                            borderColor: 'divider',
+                            maxWidth: 'none'
+                          }
+                        }
+                      }}
+                    >
+                      <IconButton size="small" sx={{ p: 0.5 }}>
+                        <History fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+              );
+            })}
         </Box>
       </Modal>
     </>
   );
 }
+
+export default memo(Card);

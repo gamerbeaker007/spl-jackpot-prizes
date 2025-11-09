@@ -24,12 +24,14 @@ export function useJackPotOverview(options: UseCardDataOptions = {}): UseCardDat
     setError(null)
 
     try {
-      const jackpotResponse = await fetch(`/api/jackpot-overview?edition=${edition}`, {})
+      const jackpotResponse = await fetch(`/api/jackpot-overview?edition=${edition}`, {
+        cache: 'force-cache',
+        next: { revalidate: 300 } // 5 minutes cache
+      })
 
       if (!jackpotResponse.ok) {
         throw new Error(`Failed to fetch jackpot data: ${jackpotResponse.status}`)
       }
-
 
       const jackpotResult = await jackpotResponse.json()
 

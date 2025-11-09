@@ -9,7 +9,7 @@ import {
   Divider,
   Typography
 } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useCardDetails } from '../hooks/useCardDetails'
 import { CAGoldRewardCardDetail } from './component/CAGoldRerwardCardDetail'
 import { useCAGoldRewards } from './hooks/useCAGoldRewards'
@@ -19,11 +19,11 @@ export default function JackpotPrizesPage() {
   const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
   const [selectedRarities, setSelectedRarities] = useState<number[]>([])
 
-  const toggleRarity = (rarity: number) => {
+  const toggleRarity = useCallback((rarity: number) => {
     setSelectedRarities((prev) =>
       prev.includes(rarity) ? prev.filter((r) => r !== rarity) : [...prev, rarity]
-    )
-  }
+    );
+  }, []);
 
   const filteredCards = useMemo(() => {
     if (selectedRarities.length === 0) return caGoldRewards
