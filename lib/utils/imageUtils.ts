@@ -62,13 +62,14 @@ export function getSkinImageUrl(cardName: string, skin: string): string {
 
   // Special cases for specific card/skin combinations
   if (cleanCardName === "Venari Marksrat") {
-    return `${WEB_URL}cards_soulbound/Spooky/Venari%20Marksrat.jpg`;
-  } else if (cleanCardName === "Kelya Frendul") {
-    return `${WEB_URL}cards_chaos/Spooky/Kelya%20Frendul.jpg`;
-  } else if (cleanCardName === "Uraeus") {
-    return `${WEB_URL}cards_chaos/Spooky/Uraeus.jpg`;
+    return `${WEB_URL}cards_soulbound/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
+  } else if (cleanCardName === "Kelya Frendul" || cleanCardName === "Uraeus") {
+    return `${WEB_URL}cards_chaos/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
+  } else if (cleanCardName === "Akane" || cleanCardName === "Eternal Tofu" || cleanCardName === "Gobalano Soldier") {
+    return `${WEB_URL}cards_rebellion/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
   }
 
+  console.info(`Generating skin image URL for card: ${cleanCardName} with skin: ${skin}`);
   // Default skin image path
   const encodedName = encodeURIComponent(cleanCardName);
   return `${WEB_URL}cards_v2.2/${skin}/${encodedName}.jpg`;
