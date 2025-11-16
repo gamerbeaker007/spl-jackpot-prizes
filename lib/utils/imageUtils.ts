@@ -69,7 +69,6 @@ export function getSkinImageUrl(cardName: string, skin: string): string {
     return `${WEB_URL}cards_rebellion/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
   }
 
-  console.info(`Generating skin image URL for card: ${cleanCardName} with skin: ${skin}`);
   // Default skin image path
   const encodedName = encodeURIComponent(cleanCardName);
   return `${WEB_URL}cards_v2.2/${skin}/${encodedName}.jpg`;
