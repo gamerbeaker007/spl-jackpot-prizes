@@ -54,6 +54,14 @@ export default function Navigation() {
           >
             Ranked Reward Draws
           </Button>
+
+          <Button
+            color={pathname === '/frontier-reward-draws' ? 'secondary' : 'inherit'}
+            onClick={() => handleNavigation('/frontier-reward-draws')}
+            variant={pathname === '/frontier-reward-draws' ? 'outlined' : 'text'}
+          >
+            Frontier Reward Draws
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>

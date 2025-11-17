@@ -6,21 +6,20 @@ This is a Next.js 15 app displaying Splinterlands card pack jackpot data. It sho
 ## Architecture & Data Flow
 
 ### Core Data Sources
-- **Jackpot Data**: `fetchPackJackpotOverview()` from `lib/api/splApi.ts`
-- **Card Details**: `fetchCardDetails()` from `lib/api/splApi.ts`
-- **Mint History**: `getMintHistory()` from `lib/cache/mintHistoryCacheService.ts`
+- **All Data**: Server actions in `app/actions/` using Next.js 16 caching with `"use cache"` directive
+- **SPL API Client**: `lib/api/splApi.ts` - Direct Splinterlands API calls with retry logic
 
 ### Data Flow Pattern
-1. `app/page.tsx` uses SPL API service functions for server-side data fetching
-2. Passes data to `ClientCardGrid` component for client-side filtering
-3. `Card` components fetch individual mint histories via `/api/mint_history` route
-4. API route uses `mintHistoryCacheService` which handles caching and SPL API calls
+1. Client components call server actions from `app/actions/`
+2. Server actions use Next.js 16 built-in caching with `cacheLife()`
+3. Data flows to client components for display and filtering
+4. API routes in `/app/api/` serve as fallback/legacy endpoints
 
 ### Backend Services Architecture
-- **SPL API Service** (`lib/api/splApi.ts`): Direct Splinterlands API client with axios and retry logic (no caching)
-- **Cache Server** (`lib/cache/cacheServer.ts`): Generic NodeCache-based caching with TTL management
-- **Mint History Cache Service** (`lib/cache/mintHistoryCacheService.ts`): Specialized service that handles mint history caching and API calls
+- **Server Actions** (`app/actions/`): Cached data fetching with Next.js 16 `"use cache"` directive
+- **SPL API Service** (`lib/api/splApi.ts`): Direct Splinterlands API client with axios and retry logic
 - **Logger** (`lib/log/logger.server.ts`): Structured server-side logging with different levels
+- **Caching**: Built-in Next.js 16 caching with `cacheLife()` - no external cache needed
 
 ### Key Type Definitions
 - `PackJackpotCard` - jackpot overview data with foil statistics
@@ -60,10 +59,12 @@ const FOIL_TYPES = [3, 2, 4] // Black Foil, Gold Foil Arcane, Black Foil Arcane
 - Each foil type requires separate API call to mint_history
 
 ### Caching Strategy
-- **NodeCache**: TTL-based caching with automatic cleanup (via `cacheServer`)
-- **Mint History Only**: Only mint history data is cached (30-minute cache) to prevent API rate limits
-- **Direct API Calls**: Card details, jackpot data, and balances are fetched directly from API for fresh data
-- **Cache Keys**: `mint_history_{foil}_{cardId}` (handled internally by `mintHistoryCacheService`)
+- **Next.js 16 Built-in**: All caching handled by Next.js 16 `"use cache"` directive with `cacheLife()`
+- **Cache Lifetimes**:
+  - `cacheLife('seconds')` - Jackpot overview, CA Gold rewards (short-lived data)
+  - `cacheLife('minutes')` - Mint history, balances, skins, draws (medium-lived data)
+  - `cacheLife('hours')` - Card details (long-lived static data)
+- **No External Cache**: Removed node-cache dependency - Next.js handles all caching automatically
 
 ### Error Handling & Retry Logic
 - **Exponential backoff**: 10 retries with 1000ms base delay
@@ -88,11 +89,13 @@ npm run lint   # ESLint with Next.js config
 ### File Organization
 - `app/types/` - TypeScript interfaces for API responses
 - `app/components/` - MUI-based UI components (all client-side)
+- `app/actions/` - Server actions with Next.js 16 caching
+- `app/hooks/` - Custom React hooks that call server actions
 - `app/ca-mint-history/` - CA Mint History page route
 - `app/jackpot-prizes/` - Jackpot Prizes page route
-- `app/api/` - Next.js API routes using backend services
-- `lib/api/` - Backend API service layer
-- `lib/cache/` - Caching infrastructure
+- `app/ranked-reward-draws/` - Ranked Reward Draws page route
+- `app/frontier-reward-draws/` - Frontier Reward Draws page route
+- `lib/api/` - Backend API service layer (SPL API client)
 - `lib/log/` - Logging utilities
 
 ### Styling
@@ -102,19 +105,21 @@ npm run lint   # ESLint with Next.js config
 - Responsive breakpoints handled by MUI Grid system
 
 ## External Dependencies
-- **Next.js 15** - App Router with server/client component pattern
+- **Next.js 16** - App Router with server actions and built-in caching
 - **React 19** - Latest with concurrent features
 - **Material-UI v5** - Component library with dark theme
 - **@emotion/react & @emotion/styled** - CSS-in-JS styling
 - **@mui/icons-material** - Icon library
 - **axios** - HTTP client with retry logic
-- **node-cache** - In-memory caching
 - **retry-axios** - Exponential backoff retry logic
 - **TypeScript 5** - Strict type checking enabled
 
 ## Common Tasks
-- Adding new API endpoints: Create functions in `lib/api/splApi.ts` following existing patterns
-- Cache management: Use `cacheServer` singleton with appropriate TTL values
+- Adding new API endpoints:
+  1. Create function in `lib/api/splApi.ts` following existing patterns
+  2. Create server action in `app/actions/` with `"use cache"` directive
+  3. Use appropriate `cacheLife()` based on data volatility
+- Cache management: Use Next.js 16 `cacheLife('seconds'|'minutes'|'hours')` in server actions
 - Error handling: Use logger for structured error reporting
 - UI components: All interactive components need 'use client' directive and MUI theming
 - Type safety: Update interfaces in `app/types/` for API changes

@@ -31,8 +31,11 @@ function Card({ prizeData, card }: Props) {
   const { mintData, fetchMintData } = useMintData();
   const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
 
+  const editions = card.editions.split(',').map(e => e.trim());
+
   const isArchmageYabanius = card.name === "Archmage Yabanius";
-  const isConclaveArcanaRewardEdition = card.editions === "18";
+  const isConclaveArcanaRewardEdition = editions.includes("18");
+  const isFrontierDraws = editions.includes("15") || editions.includes("16");
 
   const foilTypes = useMemo(() =>
     isArchmageYabanius ? ALL_FOIL_TYPES : DEFAULT_FOIL_TYPES,
@@ -83,7 +86,7 @@ function Card({ prizeData, card }: Props) {
                         {!data
                           ? 'Loading.....'
                           : foil === 3
-                          ? isArchmageYabanius || isConclaveArcanaRewardEdition
+                          ? isArchmageYabanius || isConclaveArcanaRewardEdition || isFrontierDraws
                           ? `${data?.total_minted || 0} / ${data?.total || 0}`
                           : `${data?.total || 0}`
                           : `${data?.total_minted || 0} / ${data?.total || 0}`}

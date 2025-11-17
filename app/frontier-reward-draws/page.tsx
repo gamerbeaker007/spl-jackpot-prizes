@@ -1,36 +1,36 @@
 import ClientCardGrid from "@/components/shared/ClientCardGrid";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 import { getCardDetails } from "@/lib/actions/cardDetails";
-import { getJackpotOverview } from "@/lib/actions/jackpotOverview";
+import { getFrontierDraws } from "@/lib/actions/frontierDraws";
 import { Alert, Box } from "@mui/material";
 import { Suspense } from "react";
 
-async function CAMintHistoryContent() {
+async function FrontierRewardDrawsContent() {
   try {
-    const [jackpotData, cardDetails] = await Promise.all([getJackpotOverview(), getCardDetails()]);
+    const [frontierDrawsData, cardDetails] = await Promise.all([getFrontierDraws(), getCardDetails()]);
 
     return (
       <ClientCardGrid
-        prizeData={jackpotData}
+        prizeData={frontierDrawsData}
         cardDetails={cardDetails}
-        title="Conclave Arcana Jackpot Prize Overview"
-        subtitle="Discover cards available in CA packs"
+        title="Frontier Reward Draws Prize Overview"
+        subtitle="Discover cards available in frontier reward draws"
       />
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return (
       <Box p={3}>
-        <Alert severity="error">Failed to load card data: {errorMessage}</Alert>
+        <Alert severity="error">Failed to load frontier draws data: {errorMessage}</Alert>
       </Box>
     );
   }
 }
 
-export default function CAMintHistoryPage() {
+export default function FrontierRewardDrawsPage() {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
-      <CAMintHistoryContent />
+      <FrontierRewardDrawsContent />
     </Suspense>
   );
 }

@@ -1,16 +1,13 @@
-import ClientCardGrid from '@/components/shared/ClientCardGrid';
-import { fetchCardDetails, fetchRankedDrawsPrizeOverview } from '@/lib/api/splApi';
-import { Alert, Box } from '@mui/material';
+import ClientCardGrid from "@/components/shared/ClientCardGrid";
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
+import { Alert, Box } from "@mui/material";
+import { Suspense } from "react";
+import { getRankedDraws } from "@/lib/actions/rankedDraws";
+import { getCardDetails } from "@/lib/actions/cardDetails";
 
-export const revalidate = 300; // Revalidate every 5 minutes
-
-export default async function RankedRewardDrawsPage() {
+async function RankedRewardDrawsContent() {
   try {
-    // Fetch data in parallel on the server
-    const [rankedDrawsData, cardDetails] = await Promise.all([
-      fetchRankedDrawsPrizeOverview(),
-      fetchCardDetails()
-    ]);
+    const [rankedDrawsData, cardDetails] = await Promise.all([getRankedDraws(), getCardDetails()]);
 
     return (
       <ClientCardGrid
@@ -21,13 +18,19 @@ export default async function RankedRewardDrawsPage() {
       />
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return (
       <Box p={3}>
-        <Alert severity="error">
-          Failed to load ranked draws data: {errorMessage}
-        </Alert>
+        <Alert severity="error">Failed to load ranked draws data: {errorMessage}</Alert>
       </Box>
     );
   }
+}
+
+export default function RankedRewardDrawsPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <RankedRewardDrawsContent />
+    </Suspense>
+  );
 }

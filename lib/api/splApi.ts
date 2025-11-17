@@ -186,6 +186,9 @@ export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
   }
 }
 
+
+
+
 /**
  * Fetch ranked draws prize overview from Splinterlands API
  */
@@ -238,6 +241,31 @@ export async function fetchCardHistory(cardId: string): Promise<CardHistoryRespo
     return data as CardHistoryResponse;
   } catch (error) {
     logger.error(`Failed to fetch card history for ${cardId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetch ranked draws prize overview from Splinterlands API
+ */
+export async function fetchFrontierDrawsPrizeOverview(): Promise<RankedDrawsPrizeCard[]> {
+  const url = "/frontier_draws/prize_overview";
+  logger.info("Fetching frontier draws prize overview");
+
+  try {
+    const res = await splBaseClient.get(url);
+    const data = res.data;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    logger.info(`Fetched ${data.length} frontier draws prize cards`);
+
+    return data as RankedDrawsPrizeCard[];
+  } catch (error) {
+    logger.error(`Failed to fetch frontier draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }

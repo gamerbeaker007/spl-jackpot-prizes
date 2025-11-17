@@ -15,14 +15,14 @@ export const TOKEN_ICON_MAPPING: Record<string, string> = {
 
 // Token display names
 export const TOKEN_DISPLAY_NAMES: Record<string, string> = {
-  BETA: 'Beta Pack',
-  CHAOS: 'Chaos Legion Pack',
-  NIGHTMARE: 'Nightmare Pack',
-  PLOT: 'Land Plot Claim',
-  RIFT: 'Riftwatcher Pack',
-  THE_PROVEN_TITLE: 'The Proven Title',
-  THE_VETERAN_TITLE: 'The Veteran Title',
-  THE_RENOWNED_TITLE: 'The Renowned Title',
+  BETA: "Beta Pack",
+  CHAOS: "Chaos Legion Pack",
+  NIGHTMARE: "Nightmare Pack",
+  PLOT: "Land Plot Claim",
+  RIFT: "Riftwatcher Pack",
+  THE_PROVEN_TITLE: "The Proven Title",
+  THE_VETERAN_TITLE: "The Veteran Title",
+  THE_RENOWNED_TITLE: "The Renowned Title",
 };
 
 // Get icon URL for token

@@ -6,12 +6,12 @@ export function BalanceCard({ item }: { item: Balance }) {
   return (
     <Card
       sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+      <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
         <Avatar
           src={getTokenIcon(item.token)}
           alt={item.token}
@@ -19,9 +19,9 @@ export function BalanceCard({ item }: { item: Balance }) {
             width: 64,
             height: 64,
             mb: 2,
-            backgroundColor: 'transparent',
-            border: '2px solid',
-            borderColor: 'divider'
+            backgroundColor: "transparent",
+            border: "2px solid",
+            borderColor: "divider",
           }}
         />
 
@@ -29,12 +29,11 @@ export function BalanceCard({ item }: { item: Balance }) {
           {getTokenDisplayName(item.token)}
         </Typography>
 
-
-        <Box sx={{ mt: 'auto', pt: 2 }}>
+        <Box sx={{ mt: "auto", pt: 2 }}>
           <Typography
             variant="h5"
             fontWeight="bold"
-            color={item.balance > 0 ? 'success.main' : 'text.secondary'}
+            color={item.balance > 0 ? "success.main" : "text.secondary"}
             textAlign="center"
           >
             {item.balance.toLocaleString()}
@@ -42,5 +41,5 @@ export function BalanceCard({ item }: { item: Balance }) {
         </Box>
       </CardContent>
     </Card>
-  )
+  );
 }

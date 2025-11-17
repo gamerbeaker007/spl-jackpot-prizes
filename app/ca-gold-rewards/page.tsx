@@ -1,106 +1,29 @@
-'use client'
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
+import { Alert, Box } from "@mui/material";
+import { Suspense } from "react";
+import { getCardDetails } from "@/lib/actions/cardDetails";
+import CAGoldRewardsClient from "./components/CAGoldRewardsClient";
+import { getJackpotGoldCards } from "@/lib/actions/caGoldRewards";
 
-import RarityFilter from '@/components/shared/RarityFilter'
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Container,
-  Divider,
-  Typography
-} from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
-import { useCardDetails } from '../hooks/useCardDetails'
-import { CAGoldRewardCardDetail } from './component/CAGoldRerwardCardDetail'
-import { useCAGoldRewards } from './hooks/useCAGoldRewards'
+async function CAGoldRewardsContent() {
+  try {
+    const [caGoldRewards, cardDetails] = await Promise.all([getJackpotGoldCards(), getCardDetails()]);
 
-export default function JackpotPrizesPage() {
-  const { caGoldRewards, loading, error } = useCAGoldRewards({ autoFetch: true })
-  const { cardDetails, loading: loadingCardDetails, error: errorCardDetails } = useCardDetails({ autoFetch: true })
-  const [selectedRarities, setSelectedRarities] = useState<number[]>([])
-
-  const toggleRarity = useCallback((rarity: number) => {
-    setSelectedRarities((prev) =>
-      prev.includes(rarity) ? prev.filter((r) => r !== rarity) : [...prev, rarity]
+    return <CAGoldRewardsClient caGoldRewards={caGoldRewards} cardDetails={cardDetails} />;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return (
+      <Box p={3}>
+        <Alert severity="error">Failed to load CA Gold rewards data: {errorMessage}</Alert>
+      </Box>
     );
-  }, []);
-
-  const filteredCards = useMemo(() => {
-    if (selectedRarities.length === 0) return caGoldRewards
-    return caGoldRewards.filter((rewardCard) => {
-      const card = cardDetails.find((c) => c.id === rewardCard.card_detail_id)
-      return card && selectedRarities.includes(card.rarity)
-    })
-  }, [caGoldRewards, cardDetails, selectedRarities])
-
-  if (loading || loadingCardDetails) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="60vh"
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    )
   }
+}
 
-  if (error || errorCardDetails) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">
-          Failed to load jackpot data: {error || errorCardDetails}
-        </Alert>
-      </Container>
-    )
-  }
-
+export default function CAGoldRewardsPage() {
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
-      {/* Page Title */}
-      <Typography variant="h4" component="h1" gutterBottom>
-        Jackpot Gold
-      </Typography>
-
-      {/* Rarity Filter */}
-      <Box sx={{ mb: 4 }}>
-        <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
-      </Box>
-
-      {/* Cards Grid */}
-      {cardDetails && filteredCards && (
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            lg: 'repeat(4, 1fr)'
-          },
-          gap: 3,
-          mb: 6
-        }}
-      >
-        {filteredCards.map((item) => (
-          <CAGoldRewardCardDetail key={item.card_detail_id} item={item} cardDetails={cardDetails} />
-        ))}
-      </Box>
-      )}
-      {filteredCards.length === 0 && (
-        <Box textAlign="center" mb={6}>
-          <Typography variant="h6" color="text.secondary">
-            {selectedRarities.length === 0 ? 'No jackpot data available' : 'No cards match the selected rarity filters'}
-          </Typography>
-        </Box>
-      )}
-
-      {/* Divider */}
-      <Divider sx={{ my: 4 }} />
-
-    </Container>
-  )
+    <Suspense fallback={<LoadingSkeleton />}>
+      <CAGoldRewardsContent />
+    </Suspense>
+  );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import MuiThemeProvider from '../components/ThemeProvider';
-import Navigation from '../components/Navigation';
+import MuiThemeProvider from "../components/ThemeProvider";
+import Navigation from "../components/Navigation";
 
 export const metadata: Metadata = {
   title: "SPL Data Dashboard",

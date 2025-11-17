@@ -5,65 +5,60 @@ import Image from "next/image";
 import { getSkinImageUrl } from "@/lib/utils/imageUtils";
 import { Skins } from "../types/skins";
 
-export function SkinsCard({ item, cardDetails }: { item: Skins, cardDetails: SplCardDetail[] }) {
+export function SkinsCard({ item, cardDetails }: { item: Skins; cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.card_detail_id;
 
-const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
-const cardName = cardDetail?.name || '';
+  const cardDetail = cardDetails.find((detail) => detail.id === cardDetailId);
+  const cardName = cardDetail?.name || "";
 
-// Early return if card detail is not found
-if (!cardDetail || !cardName.trim()) {
-  console.warn(`Card detail not found for skin ID: ${cardDetailId}`);
+  // Early return if card detail is not found
+  if (!cardDetail || !cardName.trim()) {
+    console.warn(`Card detail not found for skin ID: ${cardDetailId}`);
+    return (
+      <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
+          <Typography variant="h6" color="error" textAlign="center">
+            Card data not found (ID: {cardDetailId})
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const cleanCardName = cardName.trim();
+
+  // Use the utility function for safe image URL generation
+  const imageUrl = getSkinImageUrl(cleanCardName, item.skin);
+
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-        <Typography variant="h6" color="error" textAlign="center">
-          Card data not found (ID: {cardDetailId})
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
-const cleanCardName = cardName.trim();
-
-// Use the utility function for safe image URL generation
-const imageUrl = getSkinImageUrl(cleanCardName, item.skin);
-
-return (
     <Card
       sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+      <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
         <Tooltip
           title={
-        <Box sx={{ p: 1 }}>
-          <Image
-            src={imageUrl}
-            alt={item.skin}
-            width={260}
-            height={360}
-          />
-        </Box>
+            <Box sx={{ p: 1 }}>
+              <Image src={imageUrl} alt={item.skin} width={260} height={360} />
+            </Box>
           }
           placement="top"
         >
           <Avatar
-        src={imageUrl}
-        alt={item.skin}
-        sx={{
-          width: 64,
-          height: 64,
-          mb: 2,
-          backgroundColor: 'transparent',
-          border: '2px solid',
-          borderColor: 'divider',
-          cursor: 'pointer'
-        }}
+            src={imageUrl}
+            alt={item.skin}
+            sx={{
+              width: 64,
+              height: 64,
+              mb: 2,
+              backgroundColor: "transparent",
+              border: "2px solid",
+              borderColor: "divider",
+              cursor: "pointer",
+            }}
           />
         </Tooltip>
 
@@ -71,17 +66,17 @@ return (
           {`${item.skin} - ${cleanCardName}`}
         </Typography>
 
-        <Box sx={{ mt: 'auto', pt: 2 }}>
+        <Box sx={{ mt: "auto", pt: 2 }}>
           <Typography
-        variant="h5"
-        fontWeight="bold"
-        color={item.qty > 0 ? 'success.main' : 'text.secondary'}
-        textAlign="center"
+            variant="h5"
+            fontWeight="bold"
+            color={item.qty > 0 ? "success.main" : "text.secondary"}
+            textAlign="center"
           >
-        {item.qty.toLocaleString()}
+            {item.qty.toLocaleString()}
           </Typography>
         </Box>
       </CardContent>
     </Card>
-  )
+  );
 }

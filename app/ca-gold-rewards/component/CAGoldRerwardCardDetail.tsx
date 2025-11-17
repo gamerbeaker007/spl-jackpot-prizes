@@ -1,23 +1,22 @@
-
 import { SplCardDetail } from "@/app/types/shared";
 import { getCardImageUrl, getFallbackImageUrl } from "@/lib/utils/imageUtils";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import Image from "next/image";
 import { SplCAGoldReward } from "../types/cardCollection";
 
-export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldReward, cardDetails: SplCardDetail[] }) {
+export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldReward; cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.card_detail_id;
 
-  const cardDetail = cardDetails.find(detail => detail.id === cardDetailId);
+  const cardDetail = cardDetails.find((detail) => detail.id === cardDetailId);
 
-  const cardName = cardDetail?.name || '';
+  const cardName = cardDetail?.name || "";
 
   // Early return if card detail is not found
   if (!cardDetail || !cardName.trim()) {
     console.warn(`Card detail not found for ID: ${cardDetailId}`);
     return (
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+      <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
           <Typography variant="h6" color="error" textAlign="center">
             Card data not found (ID: {cardDetailId})
           </Typography>
@@ -33,12 +32,12 @@ export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldR
   return (
     <Card
       sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+      <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", p: 3 }}>
         <Box sx={{ p: 1 }}>
           <Image
             src={imageUrl}
@@ -52,22 +51,22 @@ export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldR
             }}
             unoptimized // Disable Next.js optimization for external images
           />
-        <Typography variant="h6" fontWeight="bold" gutterBottom textAlign="center">
-          {cardDetail.name}
-        </Typography>
+          <Typography variant="h6" fontWeight="bold" gutterBottom textAlign="center">
+            {cardDetail.name}
+          </Typography>
         </Box>
 
-        <Box sx={{ mt: 'auto', pt: 2 }}>
+        <Box sx={{ mt: "auto", pt: 2 }}>
           <Typography
-        variant="h5"
-        fontWeight="bold"
-        color={Number(item.count) > 0 ? 'success.main' : 'text.secondary'}
-        textAlign="center"
+            variant="h5"
+            fontWeight="bold"
+            color={Number(item.count) > 0 ? "success.main" : "text.secondary"}
+            textAlign="center"
           >
-        {item.count.toLocaleString()}
+            {item.count.toLocaleString()}
           </Typography>
         </Box>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,101 +1,101 @@
-import { fetchCardDetails, fetchJackPotPrizes, fetchJackPotSkins } from '@/lib/api/splApi';
-import {
-  Alert,
-  Box,
-  Container,
-  Divider,
-  Typography
-} from '@mui/material';
-import { BalanceCard } from './component/BalanceCard';
-import { SkinsCard } from './component/SkinsCard';
+import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
+import { Alert, Box, Container, Divider, Typography } from "@mui/material";
+import { Suspense } from "react";
+import { BalanceCard } from "./component/BalanceCard";
+import { SkinsCard } from "./component/SkinsCard";
+import { getJackpotBalances } from "@/lib/actions/jackpotBalances";
+import { getJackpotSkins } from "@/lib/actions/jackpotSkins";
+import { getCardDetails } from "@/lib/actions/cardDetails";
 
-export const revalidate = 300; // Revalidate every 5 minutes
-
-export default async function JackpotPrizesPage() {
+async function JackpotPrizesContent() {
   try {
-    // Fetch all data in parallel on the server
     const [jackpotPrizes, jackpotSkins, cardDetails] = await Promise.all([
-      fetchJackPotPrizes(),
-      fetchJackPotSkins(),
-      fetchCardDetails()
+      getJackpotBalances(),
+      getJackpotSkins(),
+      getCardDetails(),
     ]);
 
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
+        {/* First Part - Jackpot Data */}
+        <Typography variant="h4" component="h1" gutterBottom>
+          Jackpot Data
+        </Typography>
 
-  return (
-    <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
-      {/* First Part - Jackpot Data */}
-      <Typography variant="h4" component="h1" gutterBottom>
-        Jackpot Data
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            lg: 'repeat(4, 1fr)'
-          },
-          gap: 3,
-          mb: 6
-        }}
-      >
-        {jackpotPrizes.map((item) => (
-          <BalanceCard key={`jackpot-${item.token}`} item={item} />
-        ))}
-      </Box>
-
-      {jackpotPrizes.length === 0 && (
-        <Box textAlign="center" mb={6}>
-          <Typography variant="h6" color="text.secondary">
-            No jackpot data available
-          </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(4, 1fr)",
+            },
+            gap: 3,
+            mb: 6,
+          }}
+        >
+          {jackpotPrizes.map((item) => (
+            <BalanceCard key={`jackpot-${item.token}`} item={item} />
+          ))}
         </Box>
-      )}
 
-      {/* Divider */}
-      <Divider sx={{ my: 4 }} />
+        {jackpotPrizes.length === 0 && (
+          <Box textAlign="center" mb={6}>
+            <Typography variant="h6" color="text.secondary">
+              No jackpot data available
+            </Typography>
+          </Box>
+        )}
 
-      {/* Second Part - Jackpot Skins Data */}
-      <Typography variant="h4" component="h2" gutterBottom>
-        Jackpot Skins Data
-      </Typography>
+        {/* Divider */}
+        <Divider sx={{ my: 4 }} />
 
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
-            lg: 'repeat(4, 1fr)'
-          },
-          gap: 3
-        }}
-      >
-        {jackpotSkins.map((item) => (
-          <SkinsCard key={`jackpot-skins-${item.skin_detail_id}`} item={item} cardDetails={cardDetails} />
-        ))}
-      </Box>
+        {/* Second Part - Jackpot Skins Data */}
+        <Typography variant="h4" component="h2" gutterBottom>
+          Jackpot Skins Data
+        </Typography>
 
-      {jackpotSkins.length === 0 && (
-        <Box textAlign="center" mt={4}>
-          <Typography variant="h6" color="text.secondary">
-            No jackpot skins data available
-          </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
+              lg: "repeat(4, 1fr)",
+            },
+            gap: 3,
+          }}
+        >
+          {jackpotSkins.map((item) => (
+            <SkinsCard key={`jackpot-skins-${item.skin_detail_id}`} item={item} cardDetails={cardDetails} />
+          ))}
         </Box>
-      )}
-    </Container>
+
+        {jackpotSkins.length === 0 && (
+          <Box textAlign="center" mt={4}>
+            <Typography variant="h6" color="text.secondary">
+              No jackpot skins data available
+            </Typography>
+          </Box>
+        )}
+      </Container>
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">
-          Failed to load jackpot data: {errorMessage}
-        </Alert>
+        <Alert severity="error">Failed to load jackpot data: {errorMessage}</Alert>
       </Container>
     );
   }
+}
+
+export default function JackpotPrizesPage() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <JackpotPrizesContent />
+    </Suspense>
+  );
 }
