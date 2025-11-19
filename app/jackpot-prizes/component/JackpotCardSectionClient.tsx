@@ -29,11 +29,9 @@ export function JackpotCardSectionClient({ jackpotCards, cardDetails }: Props) {
       : jackpotCards.filter((card) => selectedRarities.includes(findRarity(card, cardDetails)));
 
   const sortedCards = filteredCards.toSorted((a, b) => {
-    // First sort by rarity
-    const rarityA = findRarity(a, cardDetails);
-    const rarityB = findRarity(b, cardDetails);
-    if (rarityA !== rarityB) {
-      return rarityB - rarityA; // Higher rarity first
+    // First sort by id
+    if (a.id !== b.id) {
+      return a.id - b.id;
     }
     // Then sort by foil
     return a.foil - b.foil;
