@@ -75,7 +75,7 @@ export function JackpotCard({ item, cardDetails }: Props) {
               color={Number(item.qty) > 0 ? "success.main" : "text.secondary"}
               textAlign="center"
             >
-              {item.qty.toLocaleString()}
+              {item.qty.toLocaleString("en-US")}
             </Typography>
           </Box>
         </Box>

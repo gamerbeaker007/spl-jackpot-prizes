@@ -1,15 +1,14 @@
 "use client";
 
 import { JackpotCard } from "@/app/jackpot-prizes/component/JackpotCard";
-import { useJackpotCards } from "@/app/jackpot-prizes/hooks/useJackpotCards";
 import { JackpotCardDetail } from "@/app/jackpot-prizes/types/card";
 import { SplCardDetail } from "@/app/types/shared";
 import RarityFilter from "@/components/shared/RarityFilter";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { Alert, Box, CircularProgress, Divider, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 
 interface Props {
+  jackpotCards: JackpotCardDetail[];
   cardDetails: SplCardDetail[];
 }
 
@@ -17,8 +16,7 @@ function findRarity(card: JackpotCardDetail, cardDetails: SplCardDetail[]) {
   return cardDetails.find((detail) => detail.id === card.id)?.rarity || 0;
 }
 
-export function JackpotCardSection({ cardDetails }: Props) {
-  const { jackpotCards, error, loading } = useJackpotCards();
+export function JackpotCardSectionClient({ jackpotCards, cardDetails }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
 
   const toggleRarity = useCallback((rarity: number) => {
@@ -31,42 +29,22 @@ export function JackpotCardSection({ cardDetails }: Props) {
       : jackpotCards.filter((card) => selectedRarities.includes(findRarity(card, cardDetails)));
 
   const sortedCards = filteredCards.toSorted((a, b) => {
-    // First sort by id
-    if (a.id !== b.id) {
-      return a.id - b.id;
+    // First sort by rarity
+    const rarityA = findRarity(a, cardDetails);
+    const rarityB = findRarity(b, cardDetails);
+    if (rarityA !== rarityB) {
+      return rarityB - rarityA; // Higher rarity first
     }
     // Then sort by foil
     return a.foil - b.foil;
   });
 
-  if (loading)
-    return (
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
-        <Typography variant="h4" gutterBottom>
-          Loading....
-        </Typography>
-        <CircularProgress size={20} />
-      </Box>
-    );
-
-  if (error)
-    return (
-      <Box p={3}>
-        <Alert severity="error">Failed to load jackpot card data: {error}</Alert>
-      </Box>
-    );
-
   return (
     <Box>
       <Box display="flex" flexDirection="column">
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <Typography variant="h4" component="h1">
-            Jackpot Card Data
-          </Typography>
-          <Tooltip title="Note: this information is based on daily cache so actual number can be off by a day">
-            <WarningAmberIcon sx={{ color: "warning.main", fontSize: 28 }} />
-          </Tooltip>
-        </Box>
+        <Typography variant="h4" component="h1">
+          Jackpot Card Data
+        </Typography>
       </Box>
       <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
 

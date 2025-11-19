@@ -1,13 +1,13 @@
 'use server'
 
+import { JackpotCardDetail } from "@/app/jackpot-prizes/types/card";
 import { fetchJackpotCards } from "@/lib/api/splApi";
 import { cacheLife } from "next/cache";
-import { JackpotCardDetail } from "@/app/jackpot-prizes/types/card";
 
 
 export async function getJackpotCards(): Promise<JackpotCardDetail[]> {
   'use cache'
-  cacheLife('days')
+  cacheLife('hours') // stale: 5min, revalidate: 1hr, expire: 1day - perfect for this use case
 
   const rawCards  = await fetchJackpotCards()
 

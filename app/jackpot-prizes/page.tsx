@@ -1,9 +1,9 @@
-import { JackpotCardSection } from "@/app/jackpot-prizes/component/JackpotCardSection";
+import { JackpotCardSectionServer } from "@/app/jackpot-prizes/component/JackpotCardSectionServer";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 import { getCardDetails } from "@/lib/actions/cardDetails";
 import { getJackpotBalances } from "@/lib/actions/jackpotBalances";
 import { getJackpotSkins } from "@/lib/actions/jackpotSkins";
-import { Alert, Box, Container, Divider, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Container, Divider, Typography } from "@mui/material";
 import { Suspense } from "react";
 import { BalanceCard } from "./component/BalanceCard";
 import { SkinsCard } from "./component/SkinsCard";
@@ -84,7 +84,19 @@ async function JackpotPrizesContent() {
 
         <Divider sx={{ my: 4 }} />
 
-        {cardDetails && <JackpotCardSection cardDetails={cardDetails} />}
+        {/* Slow loading section with its own Suspense boundary */}
+        <Suspense
+          fallback={
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2} py={8}>
+              <Typography variant="h6" color="text.secondary">
+                Loading Jackpot Cards...
+              </Typography>
+              <CircularProgress />
+            </Box>
+          }
+        >
+          <JackpotCardSectionServer cardDetails={cardDetails} />
+        </Suspense>
       </Container>
     );
   } catch (error) {
