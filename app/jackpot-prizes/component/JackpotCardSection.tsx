@@ -71,18 +71,18 @@ export function JackpotCardSection({ cardDetails }: Props) {
       <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
 
       <Box
-                sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(3, 1fr)",
-              md: "repeat(5, 1fr)",
-              lg: "repeat(5, 1fr)",
-            },
-            gap: 3,
-            mb: 6,
-          }}
-          >
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(3, 1fr)",
+            md: "repeat(5, 1fr)",
+            lg: "repeat(5, 1fr)",
+          },
+          gap: 3,
+          mb: 6,
+        }}
+      >
         {sortedCards.map((item) => (
           <JackpotCard key={`jackpot-${item.id}-${item.foil}`} item={item} cardDetails={cardDetails} />
         ))}
