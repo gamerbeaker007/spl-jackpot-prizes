@@ -1,3 +1,5 @@
+"use client";
+
 import { getCardHistory } from "@/lib/actions/cardHistory";
 import { useCallback, useState } from "react";
 import { CardHistoryResponse } from "../types/cardHistory";

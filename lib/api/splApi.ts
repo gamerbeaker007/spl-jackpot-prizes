@@ -8,6 +8,7 @@ import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
 import logger from "../log/logger.server";
+import { SplPlayerCardDetail, SplPlayerCollection } from "@/app/jackpot-prizes/types/card";
 
 const splBaseClient = axios.create({
   baseURL: "https://api.splinterlands.com",
@@ -266,6 +267,30 @@ export async function fetchFrontierDrawsPrizeOverview(): Promise<RankedDrawsPriz
     return data as RankedDrawsPrizeCard[];
   } catch (error) {
     logger.error(`Failed to fetch frontier draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+
+/**
+ * Fetch pack jackpot gold from Splinterlands API
+ */
+export async function fetchJackpotCards(): Promise<SplPlayerCardDetail[]> {
+  const url = "/cards/collection/$JACKPOT";
+  logger.info(`Fetching pack jackpot gold for username $JACKPOT`);
+
+  try {
+    const res = await splBaseClient.get(url);
+    const data = res.data as SplPlayerCollection;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data.cards)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    return data.cards;
+  } catch (error) {
+    logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }

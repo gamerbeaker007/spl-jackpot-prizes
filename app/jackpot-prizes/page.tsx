@@ -1,11 +1,12 @@
+import { JackpotCardSection } from "@/app/jackpot-prizes/component/JackpotCardSection";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
+import { getCardDetails } from "@/lib/actions/cardDetails";
+import { getJackpotBalances } from "@/lib/actions/jackpotBalances";
+import { getJackpotSkins } from "@/lib/actions/jackpotSkins";
 import { Alert, Box, Container, Divider, Typography } from "@mui/material";
 import { Suspense } from "react";
 import { BalanceCard } from "./component/BalanceCard";
 import { SkinsCard } from "./component/SkinsCard";
-import { getJackpotBalances } from "@/lib/actions/jackpotBalances";
-import { getJackpotSkins } from "@/lib/actions/jackpotSkins";
-import { getCardDetails } from "@/lib/actions/cardDetails";
 
 async function JackpotPrizesContent() {
   try {
@@ -80,6 +81,10 @@ async function JackpotPrizesContent() {
             </Typography>
           </Box>
         )}
+
+        <Divider sx={{ my: 4 }} />
+
+        {cardDetails && <JackpotCardSection cardDetails={cardDetails} />}
       </Container>
     );
   } catch (error) {

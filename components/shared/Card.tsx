@@ -126,7 +126,6 @@ function Card({ prizeData, card }: Props) {
         <Box sx={{ '& > div': { mb: 0.5 } }}>
           {openFoil !== null &&
             mintData[openFoil]?.mints.map((mint: MintHistoryItem, idx: number) => {
-              console.log('Rendering mint:', mint);
               return (
                 <Box key={mint.uid}>
                   <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useState } from "react";
 import { MintHistoryResponse } from "../types/shared";
 import { getMintHistoryAction } from "@/lib/actions/mintHistory";

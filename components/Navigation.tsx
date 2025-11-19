@@ -2,13 +2,17 @@
 
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
 import { usePathname, useRouter } from 'next/navigation'
+import { useTransition } from 'react'
 
 export default function Navigation() {
   const router = useRouter()
   const pathname = usePathname()
+  const [, startTransition] = useTransition()
 
   const handleNavigation = (path: string) => {
-    router.push(path)
+    startTransition(() => {
+      router.push(path)
+    })
   }
 
   return (
