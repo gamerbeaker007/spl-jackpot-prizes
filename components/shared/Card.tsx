@@ -36,6 +36,7 @@ function Card({ prizeData, card }: Props) {
   const isArchmageYabanius = card.name === "Archmage Yabanius";
   const isConclaveArcanaRewardEdition = editions.includes("18");
   const isFrontierDraws = editions.includes("15") || editions.includes("16");
+  const isLandCard = editions.includes("19");
 
   const foilTypes = useMemo(() =>
     isArchmageYabanius ? ALL_FOIL_TYPES : DEFAULT_FOIL_TYPES,
@@ -51,7 +52,7 @@ function Card({ prizeData, card }: Props) {
     });
   }, [card.id, fetchMintData, foilTypes, mintData]);
 
-  const imageUrl = getCardImageUrl(card.name || 'Unknown');
+  const imageUrl = getCardImageUrl(card.name || 'Unknown', 0, isLandCard);
 
   return (
     <>

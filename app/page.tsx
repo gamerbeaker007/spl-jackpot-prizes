@@ -6,24 +6,8 @@ import { useRouter } from "next/navigation";
 export default function HomePage() {
   const router = useRouter();
 
-  const handleNavigateToMintHistory = () => {
-    router.push("/ca-mint-history");
-  };
-
-  const handleNavigateToJackpotPrizes = () => {
-    router.push("/jackpot-prizes");
-  };
-
-  const handleNavigateToCaGoldRewards = () => {
-    router.push("/ca-gold-rewards");
-  };
-
-  const handleNavigateToRankedRewardDraws = () => {
-    router.push("/ranked-reward-draws");
-  };
-
-  const handleNavigateToFrontierRewardDraws = () => {
-    router.push("/frontier-reward-draws");
+  const handleNavigate = (path: string) => {
+    router.push(path);
   };
 
   return (
@@ -61,7 +45,7 @@ export default function HomePage() {
             Detailed view of individual card mint histories for the Conclave Arcana Set with foil information and the
             lucky winners.
           </Typography>
-          <Button onClick={handleNavigateToMintHistory} variant="contained" size="large" fullWidth>
+          <Button onClick={() => handleNavigate("/ca-mint-history")} variant="contained" size="large" fullWidth>
             View Mint History
           </Button>
         </Box>
@@ -83,7 +67,7 @@ export default function HomePage() {
             Overview of current jackpot prizes including tokens, titles, and other rewards available in the so-called
             &quot;Gator Buckets&quot;.
           </Typography>
-          <Button onClick={handleNavigateToJackpotPrizes} variant="contained" size="large" fullWidth>
+          <Button onClick={() => handleNavigate("/jackpot-prizes")} variant="contained" size="large" fullWidth>
             View Jackpot Prizes
           </Button>
         </Box>
@@ -104,7 +88,7 @@ export default function HomePage() {
             Overview of current CA GOLD Reward card prizes, including rarities and quantities within the Conclave Arcana
             reward set.
           </Typography>
-          <Button onClick={handleNavigateToCaGoldRewards} variant="contained" size="large" fullWidth>
+          <Button onClick={() => handleNavigate("/ca-gold-rewards")} variant="contained" size="large" fullWidth>
             View Jackpot Prizes
           </Button>
         </Box>
@@ -125,7 +109,7 @@ export default function HomePage() {
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Overview of cards available in ranked reward draws with detailed mint information and foil statistics.
           </Typography>
-          <Button onClick={handleNavigateToRankedRewardDraws} variant="contained" size="large" fullWidth>
+          <Button onClick={() => handleNavigate("/ranked-reward-draws")} variant="contained" size="large" fullWidth>
             View Ranked Rewards
           </Button>
         </Box>
@@ -146,10 +130,31 @@ export default function HomePage() {
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Overview of cards available in frontier reward draws with detailed mint information and foil statistics.
           </Typography>
-          <Button onClick={handleNavigateToFrontierRewardDraws} variant="contained" size="large" fullWidth>
+          <Button onClick={() => handleNavigate("/frontier-reward-draws")} variant="contained" size="large" fullWidth>
             View Frontier Rewards
           </Button>
         </Box>
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            textAlign: "center",
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Land Mint History
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Overview of cards available in land mint history with detailed mint information and foil statistics.
+          </Typography>
+          <Button onClick={() => handleNavigate("/land-mint-history")} variant="contained" size="large" fullWidth>
+            View Land Mint History
+          </Button>
+        </Box>
+
       </Box>
     </Container>
   );

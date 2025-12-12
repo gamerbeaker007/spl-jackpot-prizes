@@ -1,7 +1,7 @@
 'use server'
 
-import { fetchPackJackpotOverview } from '@/lib/api/splApi'
-import { PackJackpotCard } from '@/app/ca-mint-history/types/packJackpot'
+import { PackJackpotCard } from '@/app/types/packJackpot';
+import { fetchPackJackpotOverview } from '@/lib/api/splApi';
 import { cacheLife } from "next/cache";
 
 

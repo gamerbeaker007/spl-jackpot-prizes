@@ -1,23 +1,19 @@
-﻿/**
- * Utility functions for generating Splinterlands card image URLs
- */
+﻿import { WEB_URL } from "./staticUrls";
 
-const WEB_URL = 'https://d36mxiodymuqjm.cloudfront.net/';
 
 /**
  * Generates a safe card image URL with proper validation
  */
-export function getCardImageUrl(cardName: string, foil: number = 0): string {
+export function getCardImageUrl(cardName: string, foil: number = 0, isLandCard?: boolean): string {
   if (!cardName || !cardName.trim()) {
     console.warn('Invalid card name provided for image URL generation:', cardName);
     return `${WEB_URL}cards_v2.2/placeholder.jpg`;
   }
-
   const cleanCardName = cardName.trim();
   const encodedName = encodeURIComponent(cleanCardName);
 
   const foilSuffix = getFoilSuffix(foil);
-  return `${WEB_URL}cards_v2.2/${encodedName}${foilSuffix}.jpg`;
+  return `${WEB_URL}${isLandCard ? `cards_land/` : 'cards_v2.2/'}${encodedName}${foilSuffix}.jpg`;
 }
 
 /**

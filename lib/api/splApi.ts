@@ -1,14 +1,14 @@
 import { SplCAGoldReward } from "@/app/ca-gold-rewards/types/cardCollection";
-import { PackJackpotCard } from "@/app/ca-mint-history/types/packJackpot";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
+import { SplPlayerCardDetail, SplPlayerCollection } from "@/app/jackpot-prizes/types/card";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
 import { CardHistoryResponse } from "@/app/types/cardHistory";
+import { PackJackpotCard } from "@/app/types/packJackpot";
 import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
 import logger from "../log/logger.server";
-import { SplPlayerCardDetail, SplPlayerCollection } from "@/app/jackpot-prizes/types/card";
 
 const splBaseClient = axios.create({
   baseURL: "https://api.splinterlands.com",
@@ -186,8 +186,6 @@ export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
     throw error;
   }
 }
-
-
 
 
 /**
