@@ -4,6 +4,13 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import Image from "next/image";
 import { SplCAGoldReward } from "../types/cardCollection";
 
+const distrubution = [
+   5000, // Common
+   2000, // rare
+   1200, // epic
+   400, // legendary
+]
+
 export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldReward; cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.card_detail_id;
 
@@ -63,8 +70,9 @@ export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldR
             color={Number(item.count) > 0 ? "success.main" : "text.secondary"}
             textAlign="center"
           >
-            {item.count.toLocaleString()}
+            {item.count.toLocaleString()} / {distrubution[cardDetail.rarity - 1]}
           </Typography>
+
         </Box>
       </CardContent>
     </Card>
