@@ -87,7 +87,7 @@ function Card({ prizeData, card }: Props) {
                         {!data
                           ? 'Loading.....'
                           : foil === 3
-                          ? isArchmageYabanius || isConclaveArcanaRewardEdition || isFrontierDraws
+                          ? isArchmageYabanius || isConclaveArcanaRewardEdition || isFrontierDraws || isLandCard
                           ? `${data?.total_minted || 0} / ${data?.total || 0}`
                           : `${data?.total || 0}`
                           : `${data?.total_minted || 0} / ${data?.total || 0}`}
