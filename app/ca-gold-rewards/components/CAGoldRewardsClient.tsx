@@ -55,9 +55,8 @@ export default function CAGoldRewardsClient({ caGoldRewards, cardDetails }: Prop
           }}
         >
           {filteredCards.map((item) => {
-            return (
-            <CAGoldRewardCardDetail key={item.card_detail_id} item={item} cardDetails={cardDetails} />
-          )})}
+            return <CAGoldRewardCardDetail key={item.card_detail_id} item={item} cardDetails={cardDetails} />;
+          })}
         </Box>
       )}
       {filteredCards.length === 0 && (

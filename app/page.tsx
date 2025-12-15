@@ -154,7 +154,6 @@ export default function HomePage() {
             View Land Mint History
           </Button>
         </Box>
-
       </Box>
     </Container>
   );

@@ -5,11 +5,11 @@ import Image from "next/image";
 import { SplCAGoldReward } from "../types/cardCollection";
 
 const distrubution = [
-   5000, // Common
-   2000, // rare
-   1200, // epic
-   400, // legendary
-]
+  5000, // Common
+  2000, // rare
+  1200, // epic
+  400, // legendary
+];
 
 export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldReward; cardDetails: SplCardDetail[] }) {
   const cardDetailId = item.card_detail_id;
@@ -72,7 +72,6 @@ export function CAGoldRewardCardDetail({ item, cardDetails }: { item: SplCAGoldR
           >
             {item.count.toLocaleString()} / {distrubution[cardDetail.rarity - 1]}
           </Typography>
-
         </Box>
       </CardContent>
     </Card>

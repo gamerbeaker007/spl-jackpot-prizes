@@ -61,8 +61,15 @@ export function getSkinImageUrl(cardName: string, skin: string): string {
     return `${WEB_URL}cards_soulbound/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
   } else if (cleanCardName === "Kelya Frendul" || cleanCardName === "Uraeus") {
     return `${WEB_URL}cards_chaos/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
-  } else if (cleanCardName === "Akane" || cleanCardName === "Eternal Tofu" || cleanCardName === "Gobalano Soldier") {
+  } else if (cleanCardName === "Akane" ||
+    cleanCardName === "Eternal Tofu" ||
+    cleanCardName === "Gobalano Soldier" ||
+    cleanCardName === "Daigendark Surveyor" ||
+    cleanCardName === "Nimbledook Ranger" ||
+    cleanCardName === "Nimbledook Scout"  ) {
     return `${WEB_URL}cards_rebellion/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
+  } else if (    cleanCardName === "Dark Arborist") {
+    return `${WEB_URL}cards_soulboundrb/${skin}/${encodeURIComponent(cleanCardName)}.jpg`;
   }
 
   // Default skin image path

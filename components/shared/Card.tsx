@@ -32,7 +32,6 @@ function Card({ prizeData, card }: Props) {
   const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
 
   const editions = card.editions.split(',').map(e => e.trim());
-
   const isArchmageYabanius = card.name === "Archmage Yabanius";
   const isConclaveArcanaRewardEdition = editions.includes("18");
   const isFrontierDraws = editions.includes("15") || editions.includes("16");
@@ -43,14 +42,24 @@ function Card({ prizeData, card }: Props) {
     [isArchmageYabanius]
   );
 
+
+
   useEffect(() => {
-    // Fetch mint data for all foil types if not already fetched
-    foilTypes.forEach((foil) => {
-      if (!mintData[foil]) {
-        fetchMintData(card.id, foil);
+    foilTypes.forEach(foil => {
+      const data = prizeData.foils.find(f => foil == f.foil)
+      // if default does not have the data do the call to load the data
+      if (!data){
+        fetchMintData(card.id, foil)
       }
-    });
-  }, [card.id, fetchMintData, foilTypes, mintData]);
+    })
+
+
+    // Fetch mint data when dialog is opened
+    if (openFoil !== null && !mintData[openFoil]) {
+      fetchMintData(card.id, openFoil);
+    }
+
+  }, [openFoil, card.id, fetchMintData, mintData, prizeData, foilTypes]);
 
   const imageUrl = getCardImageUrl(card.name || 'Unknown', 0, isLandCard);
 
@@ -73,27 +82,26 @@ function Card({ prizeData, card }: Props) {
                 <Typography variant="h6" component="h2" gutterBottom>
                   {card.name}
                 </Typography>
-
               </Box>
 
               <Box sx={{ mt: 2, mb: 2 }}>
                 {foilTypes.map((foil) => {
-                  const data = mintData[foil];
+                  const prizeDataFoil = prizeData.foils.find(f => foil === f.foil);
+                  const mintDataFoil = mintData[foil];
+                  const minted = prizeDataFoil?.minted ?? mintDataFoil?.total_minted ?? 0;
+                  const total = prizeDataFoil?.total ?? mintDataFoil?.total ?? 0;
+                  const hasData = prizeDataFoil || mintDataFoil;
+
+                  const showFullStats = foil !== 3 || isArchmageYabanius || isConclaveArcanaRewardEdition || isFrontierDraws || isLandCard;
+                  const displayText = hasData
+                    ? (showFullStats ? `${minted} / ${total}` : `${total}`)
+                    : '...Loading';
 
                   return (
                     <Box key={foil} sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="body2">
-                        <strong>{getFoilLabel(foil)}:</strong>{' '}
-                        {!data
-                          ? 'Loading.....'
-                          : foil === 3
-                          ? isArchmageYabanius || isConclaveArcanaRewardEdition || isFrontierDraws || isLandCard
-                          ? `${data?.total_minted || 0} / ${data?.total || 0}`
-                          : `${data?.total || 0}`
-                          : `${data?.total_minted || 0} / ${data?.total || 0}`}
+                        <strong>{getFoilLabel(foil)}:</strong> {displayText}
                       </Typography>
-
-                      {data && data.mints.length > 0 && (
                         <IconButton
                           size="small"
                           onClick={() => setOpenFoil(foil)}
@@ -101,12 +109,10 @@ function Card({ prizeData, card }: Props) {
                         >
                           <Info fontSize="small" />
                         </IconButton>
-                      )}
                     </Box>
                   );
                 })}
               </Box>
-
               <Typography variant="body2" sx={{ mb: 0.5 }}>
                 Total {isArchmageYabanius ? "" : "(GFA/BFA)"} Minted: {prizeData.total_minted}
               </Typography>
