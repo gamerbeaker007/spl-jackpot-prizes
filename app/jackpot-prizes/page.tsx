@@ -79,7 +79,7 @@ async function JackpotPrizesContent() {
             <br />
             • Ultimate: 8%
             <br />
-            <em>Note: 8% then is determined which jackpot item / skin / music</em>
+            <em>Note: 8% then is determined which jackpot item / skin / card</em>
           </Typography>
         </Alert>
         <Box
