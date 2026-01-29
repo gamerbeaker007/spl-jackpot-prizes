@@ -4,7 +4,7 @@ import { JackpotCard } from "@/app/jackpot-prizes/component/JackpotCard";
 import { JackpotCardDetail } from "@/app/jackpot-prizes/types/card";
 import { SplCardDetail } from "@/app/types/shared";
 import RarityFilter from "@/components/shared/RarityFilter";
-import { Box, Divider, Typography } from "@mui/material";
+import { Alert, Box, Divider, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
 
 interface Props {
@@ -44,6 +44,20 @@ export function JackpotCardSectionClient({ jackpotCards, cardDetails }: Props) {
           Jackpot Card Data
         </Typography>
       </Box>
+      <Alert severity="info" sx={{ mb: 4 }}>
+        <Typography variant="body2" component="div">
+          <strong>Found as part of jackpot in reward chest</strong>
+          <br />
+          • Minor: 0.08%
+          <br />
+          • Major: 0.8%
+          <br />
+          • Ultimate: 8%
+          <br />
+          <em>Note: when hit it can either be jackpot item / card or for ultimate also possible a skin</em>
+        </Typography>
+      </Alert>
+
       <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
 
       <Box

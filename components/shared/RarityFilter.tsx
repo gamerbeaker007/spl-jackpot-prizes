@@ -1,4 +1,5 @@
 'use client'
+import { WEB_URL } from '@/lib/utils/staticUrls';
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import Image from 'next/image';
 import { memo } from 'react';
@@ -9,10 +10,10 @@ interface Props {
 }
 
 const rarityIcons: Record<number, string> = {
-  1: 'https://d36mxiodymuqjm.cloudfront.net/website/create_team/icon_rarity_common_new.svg',
-  2: 'https://d36mxiodymuqjm.cloudfront.net/website/create_team/icon_rarity_rare_new.svg',
-  3: 'https://d36mxiodymuqjm.cloudfront.net/website/create_team/icon_rarity_epic_new.svg',
-  4: 'https://d36mxiodymuqjm.cloudfront.net/website/create_team/icon_rarity_legendary_new.svg',
+  1: `${WEB_URL}website/create_team/icon_rarity_common_new.svg`,
+  2: `${WEB_URL}website/create_team/icon_rarity_rare_new.svg`,
+  3: `${WEB_URL}website/create_team/icon_rarity_epic_new.svg`,
+  4: `${WEB_URL}website/create_team/icon_rarity_legendary_new.svg`,
 }
 
 const rarityNames: Record<number, string> = {

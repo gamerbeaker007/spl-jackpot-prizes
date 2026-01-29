@@ -1,5 +1,4 @@
-export const WEB_URL = `https://d36mxiodymuqjm.cloudfront.net/`;
-export const SPL_WEB_URL = `https://next.splinterlands.com/`;
+import { WEB_URL } from "@/lib/utils/staticUrls";
 
 // Token to icon URL mapping
 export const TOKEN_ICON_MAPPING: Record<string, string> = {

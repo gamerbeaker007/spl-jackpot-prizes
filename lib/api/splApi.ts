@@ -1,6 +1,7 @@
 import { SplCAGoldReward } from "@/app/ca-gold-rewards/types/cardCollection";
 import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { SplPlayerCardDetail, SplPlayerCollection } from "@/app/jackpot-prizes/types/card";
+import { SplInventoryItem } from "@/app/jackpot-prizes/types/music";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
 import { CardHistoryResponse } from "@/app/types/cardHistory";
@@ -289,6 +290,61 @@ export async function fetchJackpotCards(): Promise<SplPlayerCardDetail[]> {
     return data.cards;
   } catch (error) {
     logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+/**
+ * Fetch music inventory from Splinterlands API for $MUSIC_JACKPOT
+ */
+export async function fetchJackpotMusic(): Promise<SplInventoryItem[]> {
+  const url = "/players/inventory";
+  logger.info(`Fetching music inventory for username $MUSIC_JACKPOT`);
+
+  try {
+    const res = await splBaseClient.get(url, { params: { username: "$MUSIC_JACKPOT" } });
+    const data = res.data;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    // Filter items where type === "Music"
+    const musicItems = data.filter((item: SplInventoryItem) => item.type === "Music");
+
+    logger.info(`Fetched ${musicItems.length} music items for username $MUSIC_JACKPOT`);
+
+    return musicItems as SplInventoryItem[];
+  } catch (error) {
+    logger.error(`Failed to fetch music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetch music inventory from Splinterlands API for $FRONTIER_MUSIC_JACKPOT
+ */
+export async function fetchFrontierJackpotMusic(): Promise<SplInventoryItem[]> {
+  const url = "/players/inventory";
+  logger.info(`Fetching music inventory for username $FRONTIER_MUSIC_JACKPOT`);
+
+  try {
+    const res = await splBaseClient.get(url, { params: { username: "$FRONTIER_MUSIC_JACKPOT" } });
+    const data = res.data;
+
+    // Handle API-level error even if HTTP status is 200
+    if (!data || !Array.isArray(data)) {
+      throw new Error("Invalid response from Splinterlands API: expected array");
+    }
+
+    // Filter items where type === "Music"
+    const musicItems = data.filter((item: SplInventoryItem) => item.type === "Music");
+
+    logger.info(`Fetched ${musicItems.length} music items for username $FRONTIER_MUSIC_JACKPOT`);
+
+    return musicItems as SplInventoryItem[];
+  } catch (error) {
+    logger.error(`Failed to fetch frontier music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
