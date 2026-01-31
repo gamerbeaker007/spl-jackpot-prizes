@@ -2,7 +2,7 @@
 
 import { SplCardDetail } from "@/app/types/shared";
 import RarityFilter from "@/components/shared/RarityFilter";
-import { Box, Container, Divider, Typography } from "@mui/material";
+import { Alert, Box, Container, Divider, Typography } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import { CAGoldRewardCardDetail } from "../component/CAGoldRerwardCardDetail";
 import { SplCAGoldReward } from "../types/cardCollection";
@@ -33,6 +33,35 @@ export default function CAGoldRewardsClient({ caGoldRewards, cardDetails }: Prop
       <Typography variant="h4" component="h1" gutterBottom>
         Jackpot Gold
       </Typography>
+
+      <Alert severity="info" sx={{ mt: 3, mb: 4 }}>
+        <Typography variant="body2" component="div">
+          <strong>Found in loot chest and rarity draws (reward shop)</strong>
+          <br />
+          <br />
+          <strong>Rarity Draws:</strong>
+          <br />
+          • Common: 0.5%
+          <br />
+          • Rare: 0.5%
+          <br />
+          • Epic: 1%
+          <br />
+          • Legendary: 1%
+          <br />
+          <br />
+          <strong>Loot Chest:</strong>
+          <br />
+          • Minor: 0.25% (chance to be a card: 39.99%)
+          <br />
+          • Major: 0.75% (chance to be a card: 39.9%)
+          <br />
+          • Ultimate: 2% (chance to be a card: 39%)
+          <br />
+          <br />
+          <em>Note: Alchemy potions will double the gold foil chance</em>
+        </Typography>
+      </Alert>
 
       {/* Rarity Filter */}
       <Box sx={{ mb: 4 }}>
