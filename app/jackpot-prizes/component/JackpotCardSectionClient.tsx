@@ -54,7 +54,6 @@ export function JackpotCardSectionClient({ jackpotCards, cardDetails }: Props) {
           <br />
           • Ultimate: 8%
           <br />
-          <em>Note: when hit it can either be jackpot item / card or for ultimate also possible a skin</em>
         </Typography>
       </Alert>
 

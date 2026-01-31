@@ -116,6 +116,7 @@ export async function fetchMintHistory(foil: number, cardDetailId: number): Prom
 
 
 /**
+ * @deprecated should not be used anymore here for reference on how it was done before
  * Fetch pack jackpot balances from Splinterlands API
  */
 export async function fetchJackPotPrizes(): Promise<Balance[]> {

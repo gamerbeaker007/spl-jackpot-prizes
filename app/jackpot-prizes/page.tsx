@@ -1,19 +1,16 @@
 import { JackpotCardSectionServer } from "@/app/jackpot-prizes/component/JackpotCardSectionServer";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
 import { getCardDetails } from "@/lib/actions/cardDetails";
-import { getJackpotBalances } from "@/lib/actions/jackpotBalances";
 import { getJackpotMusic } from "@/lib/actions/jackpotMusic";
 import { getJackpotSkins } from "@/lib/actions/jackpotSkins";
 import { Alert, Box, CircularProgress, Container, Divider, Typography } from "@mui/material";
 import { Suspense } from "react";
-import { BalanceCard } from "./component/BalanceCard";
 import { MusicCard } from "./component/MusicCard";
 import { SkinsCard } from "./component/SkinsCard";
 
 async function JackpotPrizesContent() {
   try {
-    const [jackpotPrizes, jackpotSkins, jackpotMusicData, cardDetails] = await Promise.all([
-      getJackpotBalances(),
+    const [jackpotSkins, jackpotMusicData, cardDetails] = await Promise.all([
       getJackpotSkins(),
       getJackpotMusic(),
       getCardDetails(),
@@ -23,51 +20,6 @@ async function JackpotPrizesContent() {
 
     return (
       <Container maxWidth="lg" sx={{ mt: 4, pb: 4 }}>
-        {/* First Part - Jackpot Data */}
-        <Typography variant="h4" component="h1" gutterBottom>
-          Jackpot Item Data
-        </Typography>
-
-        <Alert severity="info" sx={{ mb: 4 }}>
-          <Typography variant="body2" component="div">
-            <strong>Found as part of jackpot in reward chest</strong>
-            <br />
-            • Minor: 0.08%
-            <br />
-            • Major: 0.8%
-            <br />• Ultimate: 8%
-          </Typography>
-        </Alert>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-              lg: "repeat(4, 1fr)",
-            },
-            gap: 3,
-            mb: 6,
-          }}
-        >
-          {jackpotPrizes.map((item) => (
-            <BalanceCard key={`jackpot-${item.token}`} item={item} />
-          ))}
-        </Box>
-
-        {jackpotPrizes.length === 0 && (
-          <Box textAlign="center" mb={6}>
-            <Typography variant="h6" color="text.secondary">
-              No jackpot data available
-            </Typography>
-          </Box>
-        )}
-
-        {/* Divider */}
-        <Divider sx={{ my: 4 }} />
-
         {/* Second Part - Jackpot Skins Data */}
         <Typography variant="h4" component="h2" gutterBottom>
           Jackpot Skins Data
@@ -77,9 +29,8 @@ async function JackpotPrizesContent() {
           <Typography variant="body2" component="div">
             <strong>Found in the ultimate chests as jackpot prizes</strong>
             <br />
-            • Ultimate: 8%
+            • Ultimate: 1%
             <br />
-            <em>Note: 8% then is determined which jackpot item / skin / card</em>
           </Typography>
         </Alert>
         <Box
