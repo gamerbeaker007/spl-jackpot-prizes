@@ -9,7 +9,6 @@ import { PackJackpotCard } from "@/app/types/packJackpot";
 import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
-import logger from "../log/logger.server";
 
 const splBaseClient = axios.create({
   baseURL: "https://api.splinterlands.com",
@@ -32,7 +31,7 @@ splBaseClient.defaults.raxConfig = {
   ],
   onRetryAttempt: (err) => {
     const cfg = rax.getConfig(err);
-    logger.warn(`Retry attempt #${cfg?.currentRetryAttempt}`);
+    console.warn(`Retry attempt #${cfg?.currentRetryAttempt}`);
   },
 };
 
@@ -41,7 +40,7 @@ splBaseClient.defaults.raxConfig = {
  */
 export async function fetchCardDetails(): Promise<SplCardDetail[]> {
   const url = "/cards/get_details";
-  logger.info("Fetching card details from Splinterlands API");
+  console.info("Fetching card details from Splinterlands API");
 
   try {
     const res = await splBaseClient.get(url);
@@ -54,7 +53,7 @@ export async function fetchCardDetails(): Promise<SplCardDetail[]> {
 
     return data as SplCardDetail[];
   } catch (error) {
-    logger.error(`Failed to fetch card details: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch card details: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -64,7 +63,7 @@ export async function fetchCardDetails(): Promise<SplCardDetail[]> {
  */
 export async function fetchPackJackpotOverview(edition: number = 14): Promise<PackJackpotCard[]> {
   const url = "/cards/pack_jackpot_overview";
-  logger.info(`Fetching pack jackpot overview for edition ${edition}`);
+  console.info(`Fetching pack jackpot overview for edition ${edition}`);
 
   try {
     const res = await splBaseClient.get(url, {
@@ -77,11 +76,11 @@ export async function fetchPackJackpotOverview(edition: number = 14): Promise<Pa
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} pack jackpot cards for edition ${edition}`);
+    console.info(`Fetched ${data.length} pack jackpot cards for edition ${edition}`);
 
     return data as PackJackpotCard[];
   } catch (error) {
-    logger.error(`Failed to fetch pack jackpot overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch pack jackpot overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -109,7 +108,7 @@ export async function fetchMintHistory(foil: number, cardDetailId: number): Prom
 
     return data as MintHistoryResponse;
   } catch (error) {
-    logger.error(`Failed to fetch mint history for foil ${foil}, card ${cardDetailId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch mint history for foil ${foil}, card ${cardDetailId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -121,7 +120,7 @@ export async function fetchMintHistory(foil: number, cardDetailId: number): Prom
  */
 export async function fetchJackPotPrizes(): Promise<Balance[]> {
   const url = "/players/balances";
-  logger.info(`Fetching pack jackpot balances for username $JACKPOT`);
+  console.info(`Fetching pack jackpot balances for username $JACKPOT`);
 
   try {
     const res = await splBaseClient.get(url, { params: { username: "$JACKPOT" } });
@@ -132,11 +131,11 @@ export async function fetchJackPotPrizes(): Promise<Balance[]> {
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} pack jackpot balances for username $JACKPOT`);
+    console.info(`Fetched ${data.length} pack jackpot balances for username $JACKPOT`);
 
     return data as Balance[];
   } catch (error) {
-    logger.error(`Failed to fetch jackpot balances: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch jackpot balances: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -146,7 +145,7 @@ export async function fetchJackPotPrizes(): Promise<Balance[]> {
  */
 export async function fetchJackPotSkins(): Promise<Skins[]> {
   const url = "/players/skins";
-  logger.info(`Fetching pack jackpot skins for username $JACKPOT_SKINS`);
+  console.info(`Fetching pack jackpot skins for username $JACKPOT_SKINS`);
 
   try {
     const res = await splBaseClient.get(url, { params: { username: "$JACKPOT_SKINS" } });
@@ -157,11 +156,11 @@ export async function fetchJackPotSkins(): Promise<Skins[]> {
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} pack jackpot skins for username $JACKPOT_SKINS`);
+    console.info(`Fetched ${data.length} pack jackpot skins for username $JACKPOT_SKINS`);
 
     return data as Skins[];
   } catch (error) {
-    logger.error(`Failed to fetch jackpot skins: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch jackpot skins: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -171,7 +170,7 @@ export async function fetchJackPotSkins(): Promise<Skins[]> {
  */
 export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
   const url = "/cards/ca_gold_rewards";
-  logger.info(`Fetching pack jackpot gold for username $JACKPOT_GOLD`);
+  console.info(`Fetching pack jackpot gold for username $JACKPOT_GOLD`);
 
   try {
     const res = await splBaseClient.get(url);
@@ -184,7 +183,7 @@ export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
 
     return data as SplCAGoldReward[];
   } catch (error) {
-    logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -195,7 +194,7 @@ export async function fetchJackPotGold(): Promise<SplCAGoldReward[]> {
  */
 export async function fetchRankedDrawsPrizeOverview(): Promise<RankedDrawsPrizeCard[]> {
   const url = "/ranked_draws/prize_overview";
-  logger.info("Fetching ranked draws prize overview");
+  console.info("Fetching ranked draws prize overview");
 
   try {
     const res = await splBaseClient.get(url);
@@ -206,11 +205,11 @@ export async function fetchRankedDrawsPrizeOverview(): Promise<RankedDrawsPrizeC
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} ranked draws prize cards`);
+    console.info(`Fetched ${data.length} ranked draws prize cards`);
 
     return data as RankedDrawsPrizeCard[];
   } catch (error) {
-    logger.error(`Failed to fetch ranked draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch ranked draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -222,7 +221,7 @@ export async function fetchRankedDrawsPrizeOverview(): Promise<RankedDrawsPrizeC
  */
 export async function fetchCardHistory(cardId: string): Promise<CardHistoryResponse> {
   try {
-    logger.info(`Fetching card history for card ID: ${cardId}`);
+    console.info(`Fetching card history for card ID: ${cardId}`);
 
     const response = await splBaseClient.get('/cards/history', {
       params: {
@@ -237,11 +236,11 @@ export async function fetchCardHistory(cardId: string): Promise<CardHistoryRespo
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} card history entries for card ${cardId}`);
+    console.info(`Fetched ${data.length} card history entries for card ${cardId}`);
 
     return data as CardHistoryResponse;
   } catch (error) {
-    logger.error(`Failed to fetch card history for ${cardId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch card history for ${cardId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -251,7 +250,7 @@ export async function fetchCardHistory(cardId: string): Promise<CardHistoryRespo
  */
 export async function fetchFrontierDrawsPrizeOverview(): Promise<RankedDrawsPrizeCard[]> {
   const url = "/frontier_draws/prize_overview";
-  logger.info("Fetching frontier draws prize overview");
+  console.info("Fetching frontier draws prize overview");
 
   try {
     const res = await splBaseClient.get(url);
@@ -262,11 +261,11 @@ export async function fetchFrontierDrawsPrizeOverview(): Promise<RankedDrawsPriz
       throw new Error("Invalid response from Splinterlands API: expected array");
     }
 
-    logger.info(`Fetched ${data.length} frontier draws prize cards`);
+    console.info(`Fetched ${data.length} frontier draws prize cards`);
 
     return data as RankedDrawsPrizeCard[];
   } catch (error) {
-    logger.error(`Failed to fetch frontier draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch frontier draws prize overview: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -277,7 +276,7 @@ export async function fetchFrontierDrawsPrizeOverview(): Promise<RankedDrawsPriz
  */
 export async function fetchJackpotCards(): Promise<SplPlayerCardDetail[]> {
   const url = "/cards/collection/$JACKPOT";
-  logger.info(`Fetching pack jackpot gold for username $JACKPOT`);
+  console.info(`Fetching pack jackpot gold for username $JACKPOT`);
 
   try {
     const res = await splBaseClient.get(url);
@@ -290,7 +289,7 @@ export async function fetchJackpotCards(): Promise<SplPlayerCardDetail[]> {
 
     return data.cards;
   } catch (error) {
-    logger.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch jackpot gold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -299,7 +298,7 @@ export async function fetchJackpotCards(): Promise<SplPlayerCardDetail[]> {
  */
 export async function fetchJackpotMusic(): Promise<SplInventoryItem[]> {
   const url = "/players/inventory";
-  logger.info(`Fetching music inventory for username $MUSIC_JACKPOT`);
+  console.info(`Fetching music inventory for username $MUSIC_JACKPOT`);
 
   try {
     const res = await splBaseClient.get(url, { params: { username: "$MUSIC_JACKPOT" } });
@@ -313,11 +312,11 @@ export async function fetchJackpotMusic(): Promise<SplInventoryItem[]> {
     // Filter items where type === "Music"
     const musicItems = data.filter((item: SplInventoryItem) => item.type === "Music");
 
-    logger.info(`Fetched ${musicItems.length} music items for username $MUSIC_JACKPOT`);
+    console.info(`Fetched ${musicItems.length} music items for username $MUSIC_JACKPOT`);
 
     return musicItems as SplInventoryItem[];
   } catch (error) {
-    logger.error(`Failed to fetch music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
@@ -327,7 +326,7 @@ export async function fetchJackpotMusic(): Promise<SplInventoryItem[]> {
  */
 export async function fetchFrontierJackpotMusic(): Promise<SplInventoryItem[]> {
   const url = "/players/inventory";
-  logger.info(`Fetching music inventory for username $FRONTIER_MUSIC_JACKPOT`);
+  console.info(`Fetching music inventory for username $FRONTIER_MUSIC_JACKPOT`);
 
   try {
     const res = await splBaseClient.get(url, { params: { username: "$FRONTIER_MUSIC_JACKPOT" } });
@@ -341,11 +340,11 @@ export async function fetchFrontierJackpotMusic(): Promise<SplInventoryItem[]> {
     // Filter items where type === "Music"
     const musicItems = data.filter((item: SplInventoryItem) => item.type === "Music");
 
-    logger.info(`Fetched ${musicItems.length} music items for username $FRONTIER_MUSIC_JACKPOT`);
+    console.info(`Fetched ${musicItems.length} music items for username $FRONTIER_MUSIC_JACKPOT`);
 
     return musicItems as SplInventoryItem[];
   } catch (error) {
-    logger.error(`Failed to fetch frontier music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch frontier music inventory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }

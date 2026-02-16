@@ -2,7 +2,6 @@
 
 import { MusicDisplayItem, MusicItemData, SplInventoryItem } from "@/app/jackpot-prizes/types/music";
 import { fetchFrontierJackpotMusic, fetchJackpotMusic } from "@/lib/api/splApi";
-import logger from "@/lib/log/logger.server";
 import { cacheLife } from "next/cache";
 
 /**
@@ -23,7 +22,7 @@ function groupMusicItems(items: SplInventoryItem[]): MusicDisplayItem[] {
       try {
         musicData = JSON.parse(item.data) as MusicItemData;
       } catch {
-        logger.warn(`Failed to parse music data for item ${item.item_detail_id}`);
+        console.warn(`Failed to parse music data for item ${item.item_detail_id}`);
       }
 
       // Create new display item
@@ -56,7 +55,7 @@ export async function getJackpotMusic(): Promise<JackpotMusicData> {
   "use cache";
   cacheLife("minutes");
 
-  logger.info("Fetching jackpot music items");
+  console.info("Fetching jackpot music items");
 
   try {
     const [musicJackpot, frontierMusicJackpot] = await Promise.all([
@@ -68,7 +67,7 @@ export async function getJackpotMusic(): Promise<JackpotMusicData> {
     const chestMusic = groupMusicItems(musicJackpot);
     const frontierMusic = groupMusicItems(frontierMusicJackpot);
 
-    logger.info(
+    console.info(
       `Successfully fetched ${chestMusic.length} chest music items and ${frontierMusic.length} frontier music items`
     );
 
@@ -77,7 +76,7 @@ export async function getJackpotMusic(): Promise<JackpotMusicData> {
       frontierMusic,
     };
   } catch (error) {
-    logger.error(`Failed to fetch jackpot music: ${error instanceof Error ? error.message : "Unknown error"}`);
+    console.error(`Failed to fetch jackpot music: ${error instanceof Error ? error.message : "Unknown error"}`);
     throw error;
   }
 }
