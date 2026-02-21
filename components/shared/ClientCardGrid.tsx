@@ -122,7 +122,7 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
 
         {/* Desktop side pane — hidden on mobile (drawer is used instead) */}
         {!isMobile && (
-          <Box sx={{ width: 380, flexShrink: 0 }}>
+          <Box sx={{ width: 380, flexShrink: 0, position: 'sticky', top: 80, height: 'calc(100vh - 100px)' }}>
             <DetailPane selection={paneSelection} onClose={() => setPaneSelection(null)} />
           </Box>
         )}

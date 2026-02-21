@@ -2,6 +2,7 @@
 
 import { useCardHistory } from '@/app/hooks/useCardHistory';
 import { useMintData } from '@/app/hooks/useMintData';
+import { usePeakMonsterPrices } from '@/app/hooks/usePeakMonsterPrices';
 import { CardHistoryItem } from '@/app/types/cardHistory';
 import { CardPrizeData, MintHistoryItem, SplCardDetail } from '@/app/types/shared';
 import { getFoilLabel } from '@/lib/utils/imageUtils';
@@ -21,10 +22,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export interface PaneSelection {
@@ -44,6 +47,7 @@ export default function DetailPane({ selection, onClose }: Props) {
   const { card, foil } = selection ?? {};
   const { getMintData, fetchMintData } = useMintData();
   const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
+  const { getPriceForCard, getTopBidForCard, loading: priceLoading } = usePeakMonsterPrices();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -65,6 +69,98 @@ export default function DetailPane({ selection, onClose }: Props) {
 
   const mintInfo = (card && foil !== undefined) ? getMintData(card.id, foil) : null;
   const isLoadingMints = !mintInfo;
+
+  const cardPrice = (card && foil !== undefined) ? getPriceForCard(card.id, foil) : null;
+  const topBid = (card && foil !== undefined) ? getTopBidForCard(card.id, foil) : null;
+
+  const priceSection = (
+    <Box
+      sx={{
+        mx: 2,
+        mt: 1.5,
+        mb: 0.5,
+        p: 1.5,
+        borderRadius: 1,
+        bgcolor: 'action.hover',
+        border: 1,
+        borderColor: 'divider',
+      }}
+    >
+      {/* PeakMonsters attribution */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1 }}>
+        <Tooltip title="Data from PeakMonsters" placement="top">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+            <Image
+              src="https://peakmonsters.com/app/img/logo_light_large.de4cbfe1.png"
+              alt="PeakMonsters"
+              width={80}
+              height={16}
+              style={{ objectFit: 'contain' }}
+              unoptimized
+            />
+            <Typography variant="caption" color="text.secondary">
+              Market Prices
+            </Typography>
+          </Box>
+        </Tooltip>
+      </Box>
+
+      {priceLoading ? (
+        <Box display="flex" alignItems="center" gap={1}>
+          <CircularProgress size={12} />
+          <Typography variant="caption" color="text.secondary">Loading prices…</Typography>
+        </Box>
+      ) : cardPrice ? (
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <Box>
+            <Typography variant="caption" color="text.secondary" display="block">Last Sale (Total)</Typography>
+            <Typography variant="body2" fontWeight="bold" color="success.main">
+              ${cardPrice.last_sell_price.toLocaleString()}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" color="text.secondary" display="block">Last Sale (BCX)</Typography>
+            <Typography variant="body2" fontWeight="bold" color="success.main">
+              ${cardPrice.last_bcx_price.toLocaleString()}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="caption" color="text.secondary" display="block">Prev Sale (BCX)</Typography>
+            <Typography variant="body2" color="text.secondary">
+              ${cardPrice.prev_bcx_price.toLocaleString()}
+            </Typography>
+          </Box>
+        </Box>
+      ) : (
+        <Typography variant="caption" color="text.secondary">No price data available</Typography>
+      )}
+
+      {/* Top Bid */}
+      {!priceLoading && (
+        <Box sx={{ mt: 1.5, pt: 1.5, borderTop: 1, borderColor: 'divider' }}>
+          <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.5 }}>Top Bid</Typography>
+          {topBid ? (
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box>
+                <Typography variant="caption" color="text.secondary" display="block">Price (BCX)</Typography>
+                <Typography variant="body2" fontWeight="bold" color="info.main">
+                  ${topBid.usd_price.toLocaleString()}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" color="text.secondary" display="block">Qty</Typography>
+                <Typography variant="body2" color="text.primary">
+                  {topBid.remaining_qty.toLocaleString()}
+                </Typography>
+              </Box>
+            </Box>
+          ) : (
+            <Typography variant="caption" color="text.secondary">No bids</Typography>
+          )}
+        </Box>
+      )}
+    </Box>
+  );
 
   const handleHistoryClick = (mint: MintHistoryItem) => {
     if (!mint.uid || !mint.mint_player) return;
@@ -153,6 +249,7 @@ export default function DetailPane({ selection, onClose }: Props) {
           <Box sx={{ width: 40, height: 4, borderRadius: 2, bgcolor: 'divider' }} />
         </Box>
         {header}
+        {selection && view === 'mints' && priceSection}
 
       {/* Content */}
       <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
@@ -281,9 +378,7 @@ export default function DetailPane({ selection, onClose }: Props) {
     <Paper
       elevation={4}
       sx={{
-        position: 'sticky',
-        top: 80,
-        height: 'calc(100vh - 100px)',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -300,6 +395,7 @@ export default function DetailPane({ selection, onClose }: Props) {
       ) : (
         <>
           {header}
+          {view === 'mints' && priceSection}
           {/* Content (reused) */}
           <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
             {view === 'mints' && (
