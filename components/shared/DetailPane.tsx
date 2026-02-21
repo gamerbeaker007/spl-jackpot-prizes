@@ -42,7 +42,7 @@ type PaneView = 'mints' | 'history';
 
 export default function DetailPane({ selection, onClose }: Props) {
   const { card, foil } = selection ?? {};
-  const { mintData, fetchMintData } = useMintData();
+  const { getMintData, fetchMintData } = useMintData();
   const { cardHistory, loading: historyLoading, error: historyError, fetchCardHistory } = useCardHistory();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -50,19 +50,21 @@ export default function DetailPane({ selection, onClose }: Props) {
   const [view, setView] = useState<PaneView>('mints');
   const [historyPlayer, setHistoryPlayer] = useState<string | null>(null);
 
-  // Reset to mints view when selection changes
+  // Reset to mints view whenever the selection changes (card or foil)
   useEffect(() => {
     setView('mints');
     setHistoryPlayer(null);
   }, [card?.id, foil]);
 
-  // Always fetch full mint list when selection changes (prizeData only has counts, not mints array)
+  // Fetch mint list when selection changes
   useEffect(() => {
-    if (card && foil !== undefined && !mintData[foil]) {
+    if (card && foil !== undefined && !getMintData(card.id, foil)) {
       fetchMintData(card.id, foil);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [card?.id, foil]);
+  }, [card, foil, fetchMintData, getMintData]);
+
+  const mintInfo = (card && foil !== undefined) ? getMintData(card.id, foil) : null;
+  const isLoadingMints = !mintInfo;
 
   const handleHistoryClick = (mint: MintHistoryItem) => {
     if (!mint.uid || !mint.mint_player) return;
@@ -70,9 +72,6 @@ export default function DetailPane({ selection, onClose }: Props) {
     setView('history');
     fetchCardHistory(mint.uid);
   };
-
-  const mintInfo = foil !== undefined ? mintData[foil] : null;
-  const isLoadingMints = !mintInfo;
 
   const formatDate = (dateString: string) => {
     try {
