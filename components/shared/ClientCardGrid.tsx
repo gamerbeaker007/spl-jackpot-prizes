@@ -1,9 +1,10 @@
 'use client'
 
 import { CardPrizeData, SplCardDetail } from '@/app/types/shared';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import Card from './Card';
+import DetailPane, { PaneSelection } from './DetailPane';
 import RarityFilter from './RarityFilter';
 
 interface Props {
@@ -15,6 +16,15 @@ interface Props {
 
 export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
+  const [paneSelection, setPaneSelection] = useState<PaneSelection | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const handleFoilClick = useCallback((card: SplCardDetail, prize: CardPrizeData, foil: number) => {
+    setPaneSelection(prev =>
+      prev?.card.id === card.id && prev?.foil === foil ? null : { card, prizeData: prize, foil }
+    );
+  }, []);
 
   const toggleRarity = useCallback((rarity: number) => {
     setSelectedRarities((prev) =>
@@ -81,22 +91,47 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
         </Stack>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)'
-          },
-          gap: 3
-        }}
-      >
-        {filteredCards.map((prize) => {
-          const card = cardDetails.find((c) => c.id === prize.card_detail_id);
-          return card ? <Card key={card.id} prizeData={prize} card={card} /> : null;
-        })}
+      <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(2, 1fr)',
+            },
+            gap: 3,
+          }}
+        >
+          {filteredCards.map((prize) => {
+            const card = cardDetails.find((c) => c.id === prize.card_detail_id);
+            const isCardSelected = paneSelection?.card.id === card?.id;
+            return card ? (
+              <Card
+                key={card.id}
+                prizeData={prize}
+                card={card}
+                onFoilClick={(foil) => handleFoilClick(card, prize, foil)}
+                selectedFoil={isCardSelected ? paneSelection?.foil : null}
+              />
+            ) : null;
+          })}
+        </Box>
+
+        {/* Desktop side pane — hidden on mobile (drawer is used instead) */}
+        {!isMobile && (
+          <Box sx={{ width: 380, flexShrink: 0 }}>
+            <DetailPane selection={paneSelection} onClose={() => setPaneSelection(null)} />
+          </Box>
+        )}
       </Box>
+
+      {/* Mobile drawer */}
+      {isMobile && (
+        <DetailPane selection={paneSelection} onClose={() => setPaneSelection(null)} />
+      )}
     </Container>
   );
 }
