@@ -66,6 +66,23 @@ function Card({ prizeData, card, onFoilClick, selectedFoil }: Props) {
             </Typography>
 
             <Box sx={{ mt: 2, mb: 2 }}>
+              {/* Gold Foil — special request entry for land cards */}
+              {isLandCard && (
+<Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                  <Typography variant="body2" sx={{ color: 'warning.main' }}>
+                    <strong>Gold Foil:</strong>
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => onFoilClick(1)}
+                    sx={{ p: 0.5, color: selectedFoil === 1 ? 'primary.main' : 'warning.main' }}
+                    title="View Gold Foil mint history (on special request for land cards)"
+                  >
+                    <Info fontSize="small" />
+                  </IconButton>
+                </Box>
+              )}
+
               {foilTypes.map((foil) => {
                 const prizeDataFoil = prizeData.foils.find(f => foil === f.foil);
                 const minted = prizeDataFoil?.minted ?? 0;
