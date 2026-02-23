@@ -1,8 +1,6 @@
-"use cache";
-
 import { MusicDisplayItem, MusicItemData, SplInventoryItem } from "@/app/jackpot-prizes/types/music";
 import { fetchFrontierJackpotMusic, fetchJackpotMusic } from "@/lib/api/splApi";
-import { cacheLife } from "next/cache";
+import { headers } from "next/headers";
 
 /**
  * Groups inventory items by item_detail_id and sums quantities
@@ -52,11 +50,7 @@ export interface JackpotMusicData {
  * Returns separate arrays for each source
  */
 export async function getJackpotMusic(): Promise<JackpotMusicData> {
-  "use cache";
-  cacheLife("minutes");
-
   console.info("Fetching jackpot music items");
-
   try {
     const [musicJackpot, frontierMusicJackpot] = await Promise.all([
       fetchJackpotMusic(),

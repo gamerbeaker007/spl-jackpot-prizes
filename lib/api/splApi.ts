@@ -114,31 +114,6 @@ export async function fetchMintHistory(foil: number, cardDetailId: number): Prom
 }
 
 
-/**
- * @deprecated should not be used anymore here for reference on how it was done before
- * Fetch pack jackpot balances from Splinterlands API
- */
-export async function fetchJackPotPrizes(): Promise<Balance[]> {
-  const url = "/players/balances";
-  console.info(`Fetching pack jackpot balances for username $JACKPOT`);
-
-  try {
-    const res = await splBaseClient.get(url, { params: { username: "$JACKPOT" } });
-    const data = res.data;
-
-    // Handle API-level error even if HTTP status is 200
-    if (!data || !Array.isArray(data)) {
-      throw new Error("Invalid response from Splinterlands API: expected array");
-    }
-
-    console.info(`Fetched ${data.length} pack jackpot balances for username $JACKPOT`);
-
-    return data as Balance[];
-  } catch (error) {
-    console.error(`Failed to fetch jackpot balances: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    throw error;
-  }
-}
 
 /**
  * Fetch pack jackpot skins from Splinterlands API

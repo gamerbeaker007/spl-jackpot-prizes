@@ -2,13 +2,9 @@
 
 import { JackpotCardDetail } from "@/app/jackpot-prizes/types/card";
 import { fetchJackpotCards } from "@/lib/api/splApi";
-import { cacheLife } from "next/cache";
 
 
 export async function getJackpotCards(): Promise<JackpotCardDetail[]> {
-  'use cache'
-  cacheLife('hours') // stale: 5min, revalidate: 1hr, expire: 1day - perfect for this use case
-
   const rawCards  = await fetchJackpotCards()
 
   const groupMap = new Map<string, JackpotCardDetail>();

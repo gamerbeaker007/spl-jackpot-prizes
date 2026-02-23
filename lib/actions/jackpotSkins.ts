@@ -1,13 +1,9 @@
 'use server'
 
-import { fetchJackPotSkins } from '@/lib/api/splApi'
-import { Skins } from '@/app/jackpot-prizes/types/skins'
-import { cacheLife } from "next/cache";
+import { Skins } from '@/app/jackpot-prizes/types/skins';
+import { fetchJackPotSkins } from '@/lib/api/splApi';
 
 
 export async function getJackpotSkins(): Promise<Skins[]> {
-  'use cache'
-  cacheLife('minutes')
-
-  return await fetchJackPotSkins()
+  return await fetchJackPotSkins();
 }
