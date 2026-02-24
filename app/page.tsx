@@ -61,6 +61,28 @@ export default function HomePage() {
           }}
         >
           <Typography variant="h5" gutterBottom>
+            Escalation Mint History
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Detailed view of individual card mint histories for the Escalation Set with foil information and the
+            lucky winners.
+          </Typography>
+          <Button onClick={() => handleNavigate("/escalation-mint-history")} variant="contained" size="large" fullWidth>
+            View Mint History
+          </Button>
+        </Box>
+
+        <Box
+          sx={{
+            p: 3,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            textAlign: "center",
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
             Jackpot Prizes
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>

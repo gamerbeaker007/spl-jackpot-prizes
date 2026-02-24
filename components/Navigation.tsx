@@ -1,144 +1,277 @@
 'use client'
 
-import { conclave_icon_url, frontier_icon_url, jackpot_icon_url, land_icon_url, ranked_icon_url } from '@/lib/utils/staticUrls'
-import { AppBar, Box, Button, Toolbar, Tooltip, Typography } from '@mui/material'
+import { conclave_icon_url, escalation_icon_url, frontier_icon_url, jackpot_icon_url, land_icon_url, ranked_icon_url } from '@/lib/utils/staticUrls'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import MenuIcon from '@mui/icons-material/Menu'
+import {
+  AppBar,
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { MouseEvent, useState } from 'react'
 
 const iconMap = {
   conclave: conclave_icon_url,
+  escalation: escalation_icon_url,
   jackpot: jackpot_icon_url,
   frontier: frontier_icon_url,
   ranked: ranked_icon_url,
-  land: land_icon_url
+  land: land_icon_url,
+}
+
+
+interface NavItem {
+  label: string
+  href: string
+  icon: string
+  alt: string
+  color?: string // optional override for text / icon tint
+}
+
+const mintHistory: NavItem[] = [
+  { label: 'CA Mint History', href: '/ca-mint-history', icon: iconMap.conclave, alt: 'Conclave Arcana' },
+  { label: 'Escalation Mint History', href: '/escalation-mint-history', icon: iconMap.escalation, alt: 'Escalation' },
+  { label: 'Land Mint History', href: '/land-mint-history', icon: iconMap.land, alt: 'Land' },
+  { label: 'Ranked Reward Draws', href: '/ranked-reward-draws', icon: iconMap.ranked, alt: 'Ranked Draws' },
+  { label: 'Frontier Reward Draws', href: '/frontier-reward-draws', icon: iconMap.frontier, alt: 'Frontier Draws' }
+]
+
+const jackpotPrizes: NavItem[] = [
+    { label: 'Jackpot Prizes', href: '/jackpot-prizes', icon: iconMap.jackpot, alt: 'Jackpot' },
+ { label: 'Jackpot CA Gold Rewards', href: '/ca-gold-rewards', icon: iconMap.conclave, alt: 'CA Gold Rewards', color: '#FFD700' }
+]
+
+function NavDropdown({
+  label,
+  items,
+  activeRoutes,
+  pathname,
+}: {
+  label: string
+  items: NavItem[]
+  activeRoutes: string[]
+  pathname: string
+}) {
+  const [anchor, setAnchor] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchor)
+  const isActive = activeRoutes.includes(pathname)
+
+  const handleOpen = (e: MouseEvent<HTMLElement>) => setAnchor(e.currentTarget)
+  const handleClose = () => setAnchor(null)
+
+  return (
+    <>
+      <Button
+        suppressHydrationWarning
+        onClick={handleOpen}
+        endIcon={<ExpandMoreIcon sx={{ transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }} />}
+        sx={{
+          color: isActive ? 'secondary.main' : 'inherit',
+          border: isActive ? '1px solid' : '1px solid transparent',
+          borderColor: isActive ? 'secondary.main' : 'transparent',
+          borderRadius: 2,
+          textTransform: 'none',
+          fontWeight: isActive ? 700 : 400,
+          px: 1.5,
+        }}
+      >
+        {label}
+      </Button>
+
+      <Menu
+        anchorEl={anchor}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 0.5,
+              minWidth: 220,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'divider',
+            },
+          },
+        }}
+      >
+        {items.map((item, idx) => (
+          <Box key={item.href}>
+            {idx > 0 && <Divider />}
+            <MenuItem
+            suppressHydrationWarning
+              component={Link}
+              href={item.href}
+              onClick={handleClose}
+              selected={pathname === item.href}
+              sx={{
+                gap: 1.5,
+                py: 1,
+                color: item.color ?? 'inherit',
+                '&.Mui-selected': { bgcolor: 'action.selected' },
+              }}
+            >
+              <Image src={item.icon} alt={item.alt} width={22} height={22} />
+              <Typography variant="body2" fontWeight={pathname === item.href ? 700 : 400}>
+                {item.label}
+              </Typography>
+            </MenuItem>
+          </Box>
+        ))}
+      </Menu>
+    </>
+  )
 }
 
 export default function Navigation() {
   const pathname = usePathname()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const allGroups: { title: string; items: NavItem[] }[] = [
+    { title: 'Mint History', items: mintHistory },
+    { title: 'Jackpot Prizes', items: jackpotPrizes },
+  ]
 
   return (
     <AppBar position="static" sx={{ mb: 2 }}>
-      <Toolbar>
+      <Toolbar sx={{ gap: 1 }}>
         <Typography
           variant="h6"
           suppressHydrationWarning
           component={Link}
           href="/"
-          sx={{ flexGrow: 1, cursor: 'pointer', color: 'inherit', textDecoration: 'none' }}
+          sx={{ flexGrow: 1, cursor: 'pointer', color: 'inherit', textDecoration: 'none', fontWeight: 700 }}
         >
           SPL Jackpot Prizes
         </Typography>
 
-        <Box display="flex" gap={1} flexWrap="wrap">
-          <Tooltip title="CA Mint History" arrow>
-            <Button
-            suppressHydrationWarning
-              component={Link}
-              href="/ca-mint-history"
-              color={pathname === '/ca-mint-history' ? 'secondary' : 'inherit'}
-              variant={pathname === '/ca-mint-history' ? 'outlined' : 'text'}
-            >
-              <Image
-                src={iconMap.conclave}
-                alt="Conclave Arcana Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </Tooltip>
+        {/* ── Desktop nav ── */}
+        {!isMobile && (
+          <Box display="flex" gap={0.5} alignItems="center" flexWrap="wrap">
+            <NavDropdown
+              label="Mint History"
+              items={mintHistory}
+              activeRoutes={mintHistory.map(item => item.href)}
+              pathname={pathname}
+            />
+            <NavDropdown
+              label="Jackpot Prizes"
+              items={jackpotPrizes}
+              activeRoutes={jackpotPrizes.map(item => item.href)}
+              pathname={pathname}
+            />
+          </Box>
+        )}
 
-          <Tooltip title="Jackpot Prizes" arrow>
-            <Button
-              suppressHydrationWarning
-              component={Link}
-              href="/jackpot-prizes"
-              color={pathname === '/jackpot-prizes' ? 'secondary' : 'inherit'}
-              variant={pathname === '/jackpot-prizes' ? 'outlined' : 'text'}
-            >
-              <Image
-                src={iconMap.jackpot}
-                alt="Jackpot Prizes Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="CA Gold Rewards" arrow>
-            <Button
-              suppressHydrationWarning
-              component={Link}
-              href="/ca-gold-rewards"
-              color={pathname === '/ca-gold-rewards' ? 'secondary' : 'inherit'}
-              variant={pathname === '/ca-gold-rewards' ? 'outlined' : 'text'}
-            >
-              <Box display="flex" alignItems="center" gap={1} flexDirection="column">
-                <Image
-                  src={iconMap.conclave}
-                  alt="Conclave Arcana Icon"
-                  width={24}
-                  height={24}
-                />
-                <Typography variant="caption">
-                  Gold Rewards
-                </Typography>
-              </Box>
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="Ranked Reward Draws" arrow>
-            <Button
-              suppressHydrationWarning
-              component={Link}
-              href="/ranked-reward-draws"
-              color={pathname === '/ranked-reward-draws' ? 'secondary' : 'inherit'}
-              variant={pathname === '/ranked-reward-draws' ? 'outlined' : 'text'}
-            >
-              <Image
-                src={iconMap.ranked}
-                alt="Ranked Reward Draws Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="Frontier Reward Draws" arrow>
-            <Button
-              suppressHydrationWarning
-              component={Link}
-              href="/frontier-reward-draws"
-              color={pathname === '/frontier-reward-draws' ? 'secondary' : 'inherit'}
-              variant={pathname === '/frontier-reward-draws' ? 'outlined' : 'text'}
-            >
-              <Image
-                src={iconMap.frontier}
-                alt="Frontier Reward Draws Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="Land Mint History" arrow>
-            <Button
-              suppressHydrationWarning
-              component={Link}
-              href="/land-mint-history"
-              color={pathname === '/land-mint-history' ? 'secondary' : 'inherit'}
-              variant={pathname === '/land-mint-history' ? 'outlined' : 'text'}
-            >
-              <Image
-                src={iconMap.land}
-                alt="Land Mint History Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </Tooltip>
-        </Box>
+        {/* ── Mobile hamburger ── */}
+        {isMobile && (
+          <IconButton
+            color="inherit"
+            edge="end"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
       </Toolbar>
+
+      {/* ── Mobile drawer ── */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        slotProps={{
+          paper: {
+            sx: { width: 270, bgcolor: 'background.default' },
+          },
+        }}
+      >
+        {/* Drawer header */}
+        <Box
+          sx={{
+            px: 2,
+            py: 1.5,
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText',
+          }}
+        >
+          <Typography variant="h6" fontWeight={700}>
+            SPL Jackpot Prizes
+          </Typography>
+        </Box>
+
+        <Divider />
+
+        {allGroups.map(group => (
+          <List
+            key={group.title}
+            subheader={
+              <ListSubheader
+                sx={{ bgcolor: 'transparent', color: 'text.secondary', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', fontSize: '0.7rem' }}
+              >
+                {group.title}
+              </ListSubheader>
+            }
+          >
+            {group.items.map(item => {
+              const active = pathname === item.href
+              const isGold = !!item.color
+              return (
+                <ListItem key={item.href} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    href={item.href}
+                    selected={active}
+                    onClick={() => setDrawerOpen(false)}
+                    sx={{
+                      borderRadius: 1,
+                      mx: 1,
+                      color: isGold ? item.color : 'inherit',
+                      '&.Mui-selected': { bgcolor: 'action.selected', fontWeight: 700 },
+                      '&:hover': isGold ? { color: '#FFD700' } : {},
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: 36 }}>
+                      <Image src={item.icon} alt={item.alt} width={22} height={22} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      slotProps={{
+                        primary: {
+                          variant: 'body2',
+                          fontWeight: active ? 700 : 400,
+                          color: isGold ? item.color : 'inherit',
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )
+            })}
+            <Divider sx={{ mt: 1 }} />
+          </List>
+        ))}
+      </Drawer>
     </AppBar>
   )
 }
