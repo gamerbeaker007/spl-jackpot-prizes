@@ -17,6 +17,7 @@ async function LandMintHistoryContent() {
         cardDetails={cardDetails}
         title="Land Mint Jackpot Prize Overview"
         subtitle="Discover cards available in Land"
+        showRecentWinnersForEdition={edition}
       />
     );
   } catch (error) {
