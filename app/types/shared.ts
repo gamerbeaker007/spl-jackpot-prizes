@@ -66,3 +66,25 @@ export interface MintHistoryResponse {
   total_minted: number;
   mints: MintHistoryItem[];
 }
+
+export interface MintHistoryByDateItem {
+  uid: string;
+  card_detail_id: number;
+  xp: number;
+  gold: boolean;
+  mint: string;
+  mint_player: string | null;
+  mint_date: string | null;
+  mint_block: number | null;
+  mint_tx: string | null;
+  guild_name: string | null;
+  player_avatar: string | null;
+}
+
+export interface MintHistoryByDateResponse {
+  mints: MintHistoryByDateItem[];
+}
+
+export interface RecentWinner extends MintHistoryByDateItem {
+  foil: number;
+}

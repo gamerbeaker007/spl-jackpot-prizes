@@ -1,12 +1,11 @@
 import { SplCAGoldReward } from "@/app/ca-gold-rewards/types/cardCollection";
-import { Balance } from "@/app/jackpot-prizes/types/balances";
 import { SplPlayerCardDetail, SplPlayerCollection } from "@/app/jackpot-prizes/types/card";
 import { SplInventoryItem } from "@/app/jackpot-prizes/types/music";
 import { Skins } from "@/app/jackpot-prizes/types/skins";
 import { RankedDrawsPrizeCard } from "@/app/ranked-reward-draws/types/rankedDraws";
 import { CardHistoryResponse } from "@/app/types/cardHistory";
 import { PackJackpotCard } from "@/app/types/packJackpot";
-import { MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
+import { MintHistoryByDateItem, MintHistoryResponse, SplCardDetail } from "@/app/types/shared";
 import axios from "axios";
 import * as rax from "retry-axios";
 
@@ -87,33 +86,46 @@ export async function fetchPackJackpotOverview(edition: number = 14): Promise<Pa
 
 
 /**
- * Fetch mint history for a specific card and foil type
+ * Fetch mint history for a specific card and foil type.
+ * When byDate is true, returns recent winners sorted by date instead.
  */
-export async function fetchMintHistory(foil: number, cardDetailId: number): Promise<MintHistoryResponse> {
+export async function fetchMintHistory(foil: number, cardDetailId: number, byDate: true, edition?: number): Promise<MintHistoryByDateItem[]>;
+export async function fetchMintHistory(foil: number, cardDetailId: number, byDate?: false, edition?: number): Promise<MintHistoryResponse>;
+export async function fetchMintHistory(
+  foil: number,
+  cardDetailId: number,
+  byDate?: boolean,
+  edition: number = 14,
+): Promise<MintHistoryResponse | MintHistoryByDateItem[]> {
   const url = "/cards/mint_history";
 
   try {
-    const res = await splBaseClient.get(url, {
-      params: {
-        foil,
-        card_detail_id: cardDetailId
-      },
-    });
+    const params = byDate
+      ? { foil, by_date: true, by_date_edition: edition }
+      : { foil, card_detail_id: cardDetailId };
+
+    const res = await splBaseClient.get(url, { params });
     const data = res.data;
 
-    // Handle API-level error even if HTTP status is 200
     if (!data || typeof data !== "object") {
       throw new Error("Invalid response from Splinterlands API: expected object");
     }
 
+    if (byDate) {
+      if (!Array.isArray(data.mints)) {
+        throw new Error(`Invalid response from Splinterlands API: expected mints array for foil ${foil}, edition ${edition}`);
+      }
+      return data.mints as MintHistoryByDateItem[];
+    }
+
     return data as MintHistoryResponse;
   } catch (error) {
-    console.error(`Failed to fetch mint history for foil ${foil}, card ${cardDetailId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(`Failed to fetch mint history for foil ${foil}${
+      byDate ? `, edition ${edition} (by_date)` : `, card ${cardDetailId}`
+    }: ${error instanceof Error ? error.message : 'Unknown error'}`);
     throw error;
   }
 }
-
-
 
 /**
  * Fetch pack jackpot skins from Splinterlands API

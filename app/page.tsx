@@ -64,8 +64,8 @@ export default function HomePage() {
             Escalation Mint History
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Detailed view of individual card mint histories for the Escalation Set with foil information and the
-            lucky winners.
+            Detailed view of individual card mint histories for the Escalation Set with foil information and the lucky
+            winners.
           </Typography>
           <Button onClick={() => handleNavigate("/escalation-mint-history")} variant="contained" size="large" fullWidth>
             View Mint History

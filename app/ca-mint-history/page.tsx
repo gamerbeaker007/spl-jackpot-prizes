@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 async function CAMintHistoryContent() {
   try {
-    const [jackpotData, cardDetails] = await Promise.all([getJackpotOverview(), getCardDetails()]);
+    const [jackpotData, cardDetails] = await Promise.all([getJackpotOverview(14), getCardDetails()]);
 
     return (
       <ClientCardGrid
@@ -15,6 +15,7 @@ async function CAMintHistoryContent() {
         cardDetails={cardDetails}
         title="Conclave Arcana Jackpot Prize Overview"
         subtitle="Discover cards available in CA packs"
+        showRecentWinnersForEdition={14}
       />
     );
   } catch (error) {

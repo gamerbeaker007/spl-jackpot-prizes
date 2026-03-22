@@ -1,9 +1,9 @@
 import ClientCardGrid from "@/components/shared/ClientCardGrid";
 import LoadingSkeleton from "@/components/shared/LoadingSkeleton";
+import { getCardDetails } from "@/lib/actions/cardDetails";
+import { getRankedDraws } from "@/lib/actions/rankedDraws";
 import { Alert, Box } from "@mui/material";
 import { Suspense } from "react";
-import { getRankedDraws } from "@/lib/actions/rankedDraws";
-import { getCardDetails } from "@/lib/actions/cardDetails";
 
 async function RankedRewardDrawsContent() {
   try {

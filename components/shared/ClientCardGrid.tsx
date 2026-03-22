@@ -1,7 +1,9 @@
 'use client'
 
+import { useRecentWinners } from '@/app/hooks/useRecentWinners';
 import { CardPrizeData, SplCardDetail } from '@/app/types/shared';
-import { Box, Container, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { RecentWinnersCarousel } from '@/components/shared/RecentWinnersCarousel';
+import { Box, Container, Divider, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
 import Card from './Card';
 import DetailPane, { PaneSelection } from './DetailPane';
@@ -12,9 +14,10 @@ interface Props {
   cardDetails: SplCardDetail[];
   title: string;
   subtitle?: string;
+  showRecentWinnersForEdition?: number;
 }
 
-export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle }: Props) {
+export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle, showRecentWinnersForEdition }: Props) {
   const [selectedRarities, setSelectedRarities] = useState<number[]>([]);
   const [paneSelection, setPaneSelection] = useState<PaneSelection | null>(null);
   const theme = useTheme();
@@ -64,8 +67,11 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
     [filteredCards]
   );
 
+  const { winners, loading: winnersLoading } = useRecentWinners(showRecentWinnersForEdition);
+
   return (
     <Container maxWidth="xl">
+
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Stack>
           <Typography variant="h4" align="center">
@@ -82,6 +88,27 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
         </Stack>
       </Box>
 
+
+            {/* Recent Pack Jackpot Winners carousel */}
+      {showRecentWinnersForEdition !== undefined && (
+        <Box sx={{ mb: 2, mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Recent Pack Jackpot Winners
+          </Typography>
+          {winnersLoading ? (
+            <Box sx={{ display: 'flex', gap: '10px', py: 1, overflow: 'hidden' }}>
+              {Array.from({ length: 7 }).map((_, i) => (
+                <Skeleton key={i} variant="rounded" width={120} height={200} sx={{ flexShrink: 0 }} />
+              ))}
+            </Box>
+          ) : (
+            <RecentWinnersCarousel winners={winners} cardDetails={cardDetails} />
+          )}
+        </Box>
+      )}
+
+      {showRecentWinnersForEdition !== undefined && <Divider sx={{ mb: 4 }} />}
+
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Stack>
           <RarityFilter selected={selectedRarities} onToggle={toggleRarity} />
@@ -90,6 +117,7 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
           </Typography>
         </Stack>
       </Box>
+
 
       <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
         <Box

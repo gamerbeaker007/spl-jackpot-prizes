@@ -15,6 +15,7 @@ async function EscalationMintHistoryContent() {
         cardDetails={cardDetails}
         title="Escalation Jackpot Prize Overview"
         subtitle="Discover cards available in Escalation packs"
+        showRecentWinnersForEdition={20}
       />
     );
   } catch (error) {
