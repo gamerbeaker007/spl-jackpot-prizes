@@ -15,6 +15,7 @@ async function RankedRewardDrawsContent() {
         cardDetails={cardDetails}
         title="Ranked Reward Draws Prize Overview"
         subtitle="Discover cards available in ranked reward draws"
+        showRecentWinnersForEdition={18}
       />
     );
   } catch (error) {

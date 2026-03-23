@@ -15,6 +15,7 @@ async function FrontierRewardDrawsContent() {
         cardDetails={cardDetails}
         title="Frontier Reward Draws Prize Overview"
         subtitle="Discover cards available in frontier reward draws"
+        showRecentWinnersForEdition={15}
       />
     );
   } catch (error) {

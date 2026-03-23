@@ -335,3 +335,45 @@ export async function fetchFrontierJackpotMusic(): Promise<SplInventoryItem[]> {
     throw error;
   }
 }
+
+/**
+ * Fetch recent prizes from ranked draws
+ */
+export async function fetchRankedDrawsRecentPrizes(foil: number): Promise<MintHistoryByDateItem[]> {
+  const url = "/ranked_draws/recent_prizes";
+  console.info(`Fetching ranked draws recent prizes for foil ${foil}`);
+
+  try {
+    const res = await splBaseClient.get(url, { params: { foil } });
+    const data = res.data;
+
+    if (Array.isArray(data)) return data as MintHistoryByDateItem[];
+    if (data && Array.isArray(data.mints)) return data.mints as MintHistoryByDateItem[];
+
+    throw new Error("Invalid response from Splinterlands API: expected array");
+  } catch (error) {
+    console.error(`Failed to fetch ranked draws recent prizes: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetch recent prizes from frontier draws
+ */
+export async function fetchFrontierDrawsRecentPrizes(foil: number): Promise<MintHistoryByDateItem[]> {
+  const url = "/frontier_draws/recent_prizes";
+  console.info(`Fetching frontier draws recent prizes for foil ${foil}`);
+
+  try {
+    const res = await splBaseClient.get(url, { params: { foil } });
+    const data = res.data;
+
+    if (Array.isArray(data)) return data as MintHistoryByDateItem[];
+    if (data && Array.isArray(data.mints)) return data.mints as MintHistoryByDateItem[];
+
+    throw new Error("Invalid response from Splinterlands API: expected array");
+  } catch (error) {
+    console.error(`Failed to fetch frontier draws recent prizes: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error;
+  }
+}

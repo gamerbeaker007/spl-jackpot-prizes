@@ -14,7 +14,7 @@ interface Props {
   cardDetails: SplCardDetail[];
   title: string;
   subtitle?: string;
-  showRecentWinnersForEdition?: number;
+  showRecentWinnersForEdition: number;
 }
 
 export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle, showRecentWinnersForEdition }: Props) {
@@ -67,6 +67,7 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
     [filteredCards]
   );
 
+  const winnersLabel = `Recent Winners (last 8 days)`;
   const { winners, loading: winnersLoading } = useRecentWinners(showRecentWinnersForEdition);
 
   return (
@@ -89,11 +90,10 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
       </Box>
 
 
-            {/* Recent Pack Jackpot Winners carousel */}
-      {showRecentWinnersForEdition !== undefined && (
+            {/* Recent Winners carousel */}
         <Box sx={{ mb: 2, mt: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Recent Pack Jackpot Winners
+            {winnersLabel}
           </Typography>
           {winnersLoading ? (
             <Box sx={{ display: 'flex', gap: '10px', py: 1, overflow: 'hidden' }}>
@@ -105,9 +105,8 @@ export default function ClientCardGrid({ prizeData, cardDetails, title, subtitle
             <RecentWinnersCarousel winners={winners} cardDetails={cardDetails} />
           )}
         </Box>
-      )}
 
-      {showRecentWinnersForEdition !== undefined && <Divider sx={{ mb: 4 }} />}
+      <Divider sx={{ mb: 4 }} />
 
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Stack>

@@ -4,7 +4,7 @@ import { getRecentWinnersAction } from "@/lib/actions/mintHistory";
 import { useEffect, useState } from "react";
 import { RecentWinner } from "../types/shared";
 
-export function useRecentWinners(edition: number | undefined) {
+export function useRecentWinners(edition: number) {
   const [winners, setWinners] = useState<RecentWinner[]>([]);
   const [loading, setLoading] = useState(edition !== undefined);
 

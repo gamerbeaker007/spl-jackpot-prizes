@@ -136,7 +136,8 @@ export function RecentWinnersCarousel({ winners, cardDetails }: Props) {
                         alt={cardName || `Card ${winner.card_detail_id}`}
                         fill
                         sizes={`${CARD_WIDTH}px`}
-                        style={{ objectFit: "contain" }}
+                        style={{ objectFit: "contain", pointerEvents: "none" }}
+                        draggable={false}
                       />
                     ) : (
                       <Box
